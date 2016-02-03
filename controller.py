@@ -48,18 +48,18 @@ class Book(db.Model):
         self.number_of_pages = number_of_pages
 
     def __repr__(self):
-        return '<Title: {}>'.format(self.title)
+        return '<Title: >'.format(self.title)
 
 
-@app.route("/hello")
+@app.route("/")
 @app.route("/hello/<name>")
 def index(name=None):
-    return render_template('index.html', name=name)
+    books = Book.query.all()
+    return render_template('index.html', books=books)
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
     # app.run(host='0.0.0.0') # listens on all public IPs. 
 
     app.run()
-
 

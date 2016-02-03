@@ -2,6 +2,16 @@
 
 <title>Hello from Flask</title>
 
+<ul>
+  {% for book in books %}
+	<li>{{ book.isbn }}</li>
+	<li>{{ book.title }}</li>
+	<li>{{ book.authors }}</li>
+	<li>{{ book.publish_date }}</li>
+	<li>{{ book.number_of_pages }}</li>
+  {% endfor %}
+</ul>
+
 {% if name %}
   <h1>Hello {{ name }}!</h1>
 {% else %}
