@@ -5,7 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 import os
 
-sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'tmp', 'db.sqlite')
+db_name = 'books.sqlite'
+sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'tmp', db_name)
 
 app = Flask(__name__)
 
@@ -13,23 +14,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_db
 db = SQLAlchemy(app)
 
-
 # flask will reload itself on changes when debug is True
 # flask can execute arbitrary code if you set this True
 app.debug = True 
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
-
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
-
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
 
 
 class Book(db.Model):
@@ -42,13 +29,16 @@ class Book(db.Model):
         curl 'https://openlibrary.org/api/books?bibkeys=ISBN:9780980200447&jscmd=data&format=json'
         using jscmd=data yields less info but is more stable
         using jscmd=details will give us book cover thumbnail, preview url, table of contents, and more
+
+    Enhancements:
+        use jscmd=details to get cover thumbnail... this could be a key piece of the template
     """
     id = db.Column(db.Integer, primary_key=True)
     isbn = db.Column(db.String(20), unique=True)
-    title = db.Column(db.String(200), unique=True)
-    authors = db.Column(db.String(200), unique=True)
-    publish_date = db.Column(db.String(20), unique=True)
-    number_of_pages = db.Column(db.String(20), unique=True)
+    title = db.Column(db.String(200), unique=False)
+    authors = db.Column(db.String(200), unique=False)
+    publish_date = db.Column(db.String(20), unique=False)
+    number_of_pages = db.Column(db.String(20), unique=False)
 
     def __init__(self, isbn, title, authors, publish_date, number_of_pages):
         self.isbn = isbn
@@ -64,7 +54,7 @@ class Book(db.Model):
 @app.route("/hello")
 @app.route("/hello/<name>")
 def index(name=None):
-    return render_template('hello.html', name=name)
+    return render_template('index.html', name=name)
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
