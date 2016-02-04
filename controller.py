@@ -5,8 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 import os
 
+DB_DIR = "database"
 db_name = 'books.sqlite'
-sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'tmp', db_name)
+sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'database', db_name)
 
 app = Flask(__name__)
 
@@ -17,6 +18,8 @@ db = SQLAlchemy(app)
 # flask will reload itself on changes when debug is True
 # flask can execute arbitrary code if you set this True
 app.debug = True 
+
+PAGINATE_BY_HOWMANY = 50
 
 
 class Book(db.Model):
@@ -65,7 +68,7 @@ def index(page=1, isbn=None):
         return render_template('index.html', books=books)
 
     else:
-        books = Book.query.paginate(page,1,False)
+        books = Book.query.paginate(page,PAGINATE_BY_HOWMANY,False)
         return render_template('index.html', books=books)
 
 if __name__ == "__main__":

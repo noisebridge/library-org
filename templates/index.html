@@ -2,6 +2,18 @@
 
 <title>Noisebridge - Dead Tree Library</title>
 
+{% if books.has_prev %}
+<a href="{{ url_for('index', page=books.prev_num) }}">Previous Page</a>
+{% endif %}
+
+{% for page in range(1,books.pages+1) %}
+<a href="{{ url_for('index', page=page) }}">{{page}}</a>
+{% endfor %}
+
+{% if books.has_next %}
+<a href="{{ url_for('index', page=books.next_num) }}">Next Page</a>
+{% endif %}
+
 <ul>
   <!-- books will be a pagination object -->
   {% for book in books.items %}
@@ -13,15 +25,3 @@
   {% endfor %}
 </ul>
 
-{% if books.has_prev %}
-<a href="{{ url_for('index', page=books.prev_num) }}">Previous Page</a>
-{% endif %}
-
-{% for page in range(1,books.pages+1) %}
-<a href="{{ url_for('index', page=page) }}">{{page}}</a>
-{% endfor %}
-
-
-{% if books.has_next %}
-<a href="{{ url_for('index', page=books.next_num) }}">Next Page</a>
-{% endif %}
