@@ -18,6 +18,7 @@ if __name__ == "__main__":
         source_data = json.load(f)
 
 
+    # simpledata_list order: 0. isbn, 1. title, 2. # pages, 3. publish_date, 4. authors.
     for k, v in source_data.iteritems():
         simpledata_list = list()
         simpledata_list.append(k[5:])

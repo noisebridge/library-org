@@ -46,7 +46,7 @@ class Book(db.Model):
     publish_date = db.Column(db.String(20), unique=False)
     number_of_pages = db.Column(db.String(20), unique=False)
 
-    def __init__(self, isbn, title, authors, publish_date, number_of_pages):
+    def __init__(self, isbn, title, publish_date, number_of_pages, authors):
         self.isbn = isbn
         self.title = title
         self.authors = authors

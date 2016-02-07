@@ -2,6 +2,15 @@
 
 {% block title %}TEST{% endblock %}
 
+{% block inlinecss %}
+<style type="text/css">
+  .book-list {
+    margin-bottom: 10px;
+  }
+
+</style>
+{% endblock %}
+
 {% block main %}
 
 <div class="row">
@@ -18,16 +27,16 @@
     <a href="{{ url_for('index', page=books.next_num) }}">Next Page</a>
     {% endif %}
 
-    <ul>
       <!-- books will be a pagination object -->
       {% for book in books.items %}
-        <li>{{ book.isbn }}</li>
+      <ul>
         <li>{{ book.title }}</li>
-        <li>{{ book.authors }}</li>
-        <li>{{ book.publish_date }}</li>
-        <li>{{ book.number_of_pages }}</li>
+        <li>Authors: {{ book.authors }}</li>
+        <li>Date Published: {{ book.publish_date }}</li>
+        <li>Number of pages: {{ book.number_of_pages }}</li>
+        <li>ISBN: {{ book.isbn }}</li>
+      </ul>
       {% endfor %}
-    </ul>
   </div>
 </div>
 
