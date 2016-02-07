@@ -1,0 +1,28 @@
+{
+  "name": "frontend-base",
+  "version": "0.0.1",
+  "authors": [
+    "Trent Robbins <robbintt@gmail.com>"
+  ],
+  "description": "Base bower installation for a generic project.",
+  "keywords": [
+    "base",
+    "gulp",
+    "bower",
+    "node"
+  ],
+  "license": "private",
+  "homepage": "www.tauinformatics.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "~3.3.5",
+    "font-awesome": "fontawesome#~4.4.0",
+    "jquery": "~2.1.4"
+  }
+}

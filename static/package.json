@@ -1,0 +1,44 @@
+{
+  "name": "frontend-base",
+  "version": "0.0.1",
+  "description": "A base frontend. Drop this into various web projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/robbintt/frontend-base"
+  },
+  "keywords": [
+    "frontend",
+    "base",
+    "nodejs",
+    "gulp",
+    "bower"
+  ],
+  "author": "Trent Robbins",
+  "license": "private",
+  "devDependencies": {
+    "bower": "^1.5.2",
+    "gulp": "~3.9.0",
+    "gulp-bower": "0.0.10",
+    "gulp-concat": "~2.6.0",
+    "gulp-imagemin": "^2.3.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-rename": "~1.2.2",
+    "gulp-sass": "~2.0.4",
+    "gulp-uglify": "~1.3.0",
+    "imagemin-pngquant": "^4.1.2",
+    "jshint": "^2.9.1"
+  },
+  "dependencies": {
+    "gulp-bower": "0.0.10",
+    "gulp-concat": "^2.6.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-uglify": "^1.3.0",
+    "imagemin-pngquant": "^4.2.0"
+  }
+}

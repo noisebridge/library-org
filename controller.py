@@ -9,6 +9,8 @@ DB_DIR = "database"
 db_name = 'books.sqlite'
 sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'database', db_name)
 
+STATIC_DIR = "static"
+
 app = Flask(__name__)
 
 #sqlalchemy configuration
@@ -53,10 +55,14 @@ class Book(db.Model):
     def __repr__(self):
         return '<Title: >'.format(self.title)
 
+@app.route("/base/")
+def base():
+    return render_template('base.html')
 
 @app.route("/")
 def home():
     return redirect(url_for('index', page=1))
+
 @app.route("/page/<int:page>/")
 @app.route("/<isbn>")
 def index(page=1, isbn=None):

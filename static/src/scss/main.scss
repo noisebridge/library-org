@@ -1,0 +1,20 @@
+
+// Bower bootstrap TAR 082815
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// Integrate h5bp TAR 092115
+@import "common/_h5bp";
+
+
+// Bootstrap variables TAR 082815
+@import "common/_variables";
+// Bootstrap overrides TAR 092115 (not variables)
+@import "common/_overrides";
+
+// Use global, optionally break out more pages in common TAR 082815
+@import "common/_global";
+
+
+// Some specific global layouts
+@import "layouts/_header";
+@import "layouts/_footer";
+
