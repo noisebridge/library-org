@@ -60,12 +60,13 @@ class Book(db.Model):
 def test():
     return render_template('test.html')
 
+@app.route("/index/")
 @app.route("/")
 def home():
     return redirect(url_for('index', page=1))
 
 @app.route("/index/<int:page>/", methods=["GET","POST"])
-@app.route("/<isbn>")
+@app.route("/<isbn>/")
 def index(page=1, isbn=None):
     if request.method == "POST":
         s = request.form['search']
