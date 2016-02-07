@@ -69,9 +69,9 @@ def home():
 def index(page=1, isbn=None):
     # this is a possible method for filtering or showing individual books.
     # a different template can be used if an isbn is provided.
-    s = str(request.args.get('s'))
+    s = request.args.get('s')
     if s:
-        books = Book.query.order_by(Book.title.asc()).filter_by(title=s).paginate(page,PAGINATE_BY_HOWMANY,False)
+        books = Book.query.order_by(Book.title.asc()).filter(Book.title.contains(s)).paginate(page,PAGINATE_BY_HOWMANY,False)
 
     else:
         books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
