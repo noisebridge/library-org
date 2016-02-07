@@ -75,7 +75,7 @@ def index(page=1, isbn=None):
         return render_template('index.html', books=books)
 
     else:
-        books = Book.query.paginate(page,PAGINATE_BY_HOWMANY,False)
+        books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
         return render_template('index.html', books=books)
 
 if __name__ == "__main__":
