@@ -10,9 +10,9 @@
       <h1 class="title col-sm-8">Dead Tree Library - Noisebridge</h1>
       
       <div class="col-sm-4 pull-right">
-        <form class="search-form" action="/index/1/">
+        <form class="search-form" action="/index/1/" method="post">
           <fieldset class="form-group">
-            <input type="search" class="form-control" id="search" placeholder="e.g. python">
+              <input type="search" name="search" class="form-control" id="search" placeholder="e.g. python" {% if s %} value="{{ s }}" {% endif %}>
           </fieldset>
           <button type="submit" class="pull-right btn btn-primary">Search</button>
         </form>

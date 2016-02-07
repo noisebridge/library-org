@@ -64,9 +64,12 @@ def test():
 def home():
     return redirect(url_for('index', page=1))
 
-@app.route("/index/<int:page>/")
+@app.route("/index/<int:page>/", methods=["GET","POST"])
 @app.route("/<isbn>")
 def index(page=1, isbn=None):
+    if request.method == "POST":
+        s = request.form['search']
+        return redirect(url_for('index', page=1, s=s))
     # this is a possible method for filtering or showing individual books.
     # a different template can be used if an isbn is provided.
     s = request.args.get('s')
