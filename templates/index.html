@@ -13,6 +13,12 @@
   .header-spacer {
     height: 50px;
   }
+  .book-section-headers {
+    font-weight: bold;
+  }
+  .book-section-entry-container {
+    border-bottom: 1px solid lightgrey;
+  }
 </style>
 {% endblock %}
 
@@ -46,15 +52,22 @@
     </div>
 
 
-      <!-- books will be a pagination object -->
+      <div class="row">
+        <span class="book-section-headers col-sm-4">Title</span>
+        <span class="book-section-headers col-sm-3">Authors</span>
+        <span class="book-section-headers col-sm-2">Date Published</span>
+        <span class="book-section-headers col-sm-1">Pages</span>
+        <span class="book-section-headers col-sm-2">ISBN</span>
+      </div>
+
       {% for book in books.items %}
-      <ul>
-        <li>{{ book.title }}</li>
-        <li>Authors: {{ book.authors }}</li>
-        <li>Date Published: {{ book.publish_date }}</li>
-        <li>Number of pages: {{ book.number_of_pages }}</li>
-        <li>ISBN: {{ book.isbn }}</li>
-      </ul>
+      <div class="row book-section-entry-container">
+        <div class="col-sm-4">{{ book.title }}</div>
+        <div class="col-sm-3">{{ book.authors }}</div>
+        <div class="col-sm-2">{{ book.publish_date }}</div>
+        <div class="col-sm-1">{{ book.number_of_pages }}</div>
+        <div class="col-sm-2">{{ book.isbn }}</div>
+      </div>
       {% endfor %}
   </div>
 </div>
