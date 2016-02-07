@@ -76,7 +76,7 @@ def index(page=1, isbn=None):
     else:
         books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
 
-    return render_template('index.html', books=books)
+    return render_template('index.html', books=books, s=s)
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
