@@ -1,27 +1,34 @@
-<!doctype html>
+{% extends "base.html" %}
 
-<title>Noisebridge - Dead Tree Library</title>
+{% block title %}TEST{% endblock %}
 
-{% if books.has_prev %}
-<a href="{{ url_for('index', page=books.prev_num) }}">Previous Page</a>
-{% endif %}
+{% block main %}
 
-{% for page in range(1,books.pages+1) %}
-<a href="{{ url_for('index', page=page) }}">{{page}}</a>
-{% endfor %}
+<div class="row">
+  <div class="col-sm-10 col-sm-offset-1">
+    {% if books.has_prev %}
+    <a href="{{ url_for('index', page=books.prev_num) }}">Previous Page</a>
+    {% endif %}
 
-{% if books.has_next %}
-<a href="{{ url_for('index', page=books.next_num) }}">Next Page</a>
-{% endif %}
+    {% for page in range(1,books.pages+1) %}
+    <a href="{{ url_for('index', page=page) }}">{{page}}</a>
+    {% endfor %}
 
-<ul>
-  <!-- books will be a pagination object -->
-  {% for book in books.items %}
-	<li>{{ book.isbn }}</li>
-	<li>{{ book.title }}</li>
-	<li>{{ book.authors }}</li>
-	<li>{{ book.publish_date }}</li>
-	<li>{{ book.number_of_pages }}</li>
-  {% endfor %}
-</ul>
+    {% if books.has_next %}
+    <a href="{{ url_for('index', page=books.next_num) }}">Next Page</a>
+    {% endif %}
 
+    <ul>
+      <!-- books will be a pagination object -->
+      {% for book in books.items %}
+        <li>{{ book.isbn }}</li>
+        <li>{{ book.title }}</li>
+        <li>{{ book.authors }}</li>
+        <li>{{ book.publish_date }}</li>
+        <li>{{ book.number_of_pages }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
