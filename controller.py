@@ -64,7 +64,7 @@ def test():
 def home():
     return redirect(url_for('index', page=1))
 
-@app.route("/page/<int:page>/")
+@app.route("/index/<int:page>/")
 @app.route("/<isbn>")
 def index(page=1, isbn=None):
     # this is a possible method for filtering or showing individual books.
