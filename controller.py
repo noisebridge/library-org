@@ -1,6 +1,6 @@
 """
 """
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 
 import os
@@ -69,14 +69,14 @@ def home():
 def index(page=1, isbn=None):
     # this is a possible method for filtering or showing individual books.
     # a different template can be used if an isbn is provided.
-    if isbn:
-        books = Book.query.filter_by(isbn=isbn)
-        # can also set title=books.books[0].title or something here. Not sure if that precisely works.
-        return render_template('index.html', books=books)
+    s = str(request.args.get('s'))
+    if s:
+        books = Book.query.order_by(Book.title.asc()).filter_by(title=s).paginate(page,PAGINATE_BY_HOWMANY,False)
 
     else:
         books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
-        return render_template('index.html', books=books)
+
+    return render_template('index.html', books=books)
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
