@@ -22,7 +22,7 @@ db = SQLAlchemy(app)
 # flask can execute arbitrary code if you set this True
 app.debug = True 
 
-PAGINATE_BY_HOWMANY = 50
+PAGINATE_BY_HOWMANY = 15
 
 
 class Book(db.Model):
