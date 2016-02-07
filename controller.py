@@ -9,6 +9,7 @@ DB_DIR = "database"
 db_name = 'books.sqlite'
 sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'database', db_name)
 
+# haven't used this in the templates, currently using exact path on a few files.
 STATIC_DIR = "static"
 
 app = Flask(__name__)
@@ -55,9 +56,9 @@ class Book(db.Model):
     def __repr__(self):
         return '<Title: >'.format(self.title)
 
-@app.route("/base/")
-def base():
-    return render_template('base.html')
+@app.route("/test/")
+def test():
+    return render_template('test.html')
 
 @app.route("/")
 def home():
