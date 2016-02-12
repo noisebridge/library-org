@@ -1,12 +1,17 @@
-###Flask Template Project
+### Library Organization Project
 
-This is a subproject with three objectives:
-
-1. Write a dummy sqlalchemy model in sqlite, with option to covert to postgres
-2. Write a template with pagination and iteration over a sqlalchemy model
-3. Get sqlalchemy model feeding into a template
+This project provides organized data about the contents of a library.
 
 
-The project can be used as a template for quick flask webapps.
+##### Project Status
+
+Alpha released. 
 
 
+
+##### Features on-deck:
+
+1. Advanced Search
+2. API
+3. Full index view in header (no pagination)
+4. New Book submit-by-isbn with requests to multiple services. User selects service to pull data from.
