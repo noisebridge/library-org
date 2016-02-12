@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Dead Tree Library - Noisebridge{% endblock %}
+
+{% block inlinecss %}
+<style type="text/css">
+  .book-list {
+    margin-bottom: 10px;
+  }
+  .pages-list {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .header-spacer {
+    height: 20px;
+  }
+  .book-section-headers {
+    font-weight: bold;
+  }
+  .book-section-entry-container {
+    border-bottom: 1px solid lightgrey;
+  }
+</style>
+{% endblock %}
+
+{% block main %}
+
+<div class="header-spacer"></div>
+
+<div class="row">
+  <div class="col-sm-10 col-sm-offset-1">
+
+      <div class="row">
+        <span class="book-section-headers col-sm-4">Title</span>
+        <span class="book-section-headers col-sm-3">Authors</span>
+        <span class="book-section-headers col-sm-2">Date Published</span>
+        <span class="book-section-headers col-sm-1">Pages</span>
+        <span class="book-section-headers col-sm-2">ISBN</span>
+      </div>
+
+      {% for book in books %}
+      <div class="row book-section-entry-container">
+        <div class="col-sm-4">{{ book.title }}</div>
+        <div class="col-sm-3">{{ book.authors }}</div>
+        <div class="col-sm-2">{{ book.publish_date }}</div>
+        <div class="col-sm-1">{{ book.number_of_pages }}</div>
+        <div class="col-sm-2">{{ book.isbn }}</div>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

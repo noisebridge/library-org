@@ -58,6 +58,8 @@ class Book(db.Model):
 
 @app.route("/test/")
 def test():
+    """ Test frontend integration
+    """
     return render_template('test.html')
 
 @app.route("/index/")
@@ -65,14 +67,39 @@ def test():
 def home():
     return redirect(url_for('index', page=1))
 
+@app.route("/all/")
+def all():
+    """ Show everything on one page.  
+    
+    This feature will eventually become a legacy feature.
+    Useful if you wish to use a browser search tool rather than relying on the
+    advanced search.
+    Depends on the fields you want to search being visible in the template.
+    """
+    books = Book.query.order_by(Book.title.asc())
+
+    return render_template('all.html', books=books)
+
 @app.route("/index/<int:page>/", methods=["GET","POST"])
-@app.route("/<isbn>/")
 def index(page=1, isbn=None):
+    """ Show an index of books, provide some basic searchability.
+    
+    The two features coded here, pagination and search, will probably be superceded
+    by a different implementation. 
+    
+    Options:
+        javascript implementation with handlebars or moustache templating systems.
+        any implementation that consumes this data from an rest/json API.
+        the API is necessary anyways to allow others to interact with the app.
+        allow real time search and weighted search.
+        current search is too simple - sqlite query based substring search.
+
+    """
+
     if request.method == "POST":
         s = request.form['search']
         return redirect(url_for('index', page=1, s=s))
-    # this is a possible method for filtering or showing individual books.
-    # a different template can be used if an isbn is provided.
+
     s = request.args.get('s')
     if s:
         books = Book.query.order_by(Book.title.asc()).filter(Book.title.contains(s)).paginate(page,PAGINATE_BY_HOWMANY,False)

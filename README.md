@@ -13,5 +13,4 @@ Alpha released.
 
 1. Advanced Search
 2. API
-3. Full index view in header (no pagination)
-4. New Book submit-by-isbn with requests to multiple services. User selects service to pull data from.
+3. New Book submit-by-isbn with requests to multiple services. User selects service to pull data from.
