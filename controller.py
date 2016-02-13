@@ -7,7 +7,9 @@ import os
 
 DB_DIR = "database"
 db_name = 'books.sqlite'
-sqlite_db = 'sqlite:////' + os.path.join(os.getcwd(), 'database', db_name)
+project_root = os.path.dirname(os.path.realpath(__file__))
+
+sqlite_db = 'sqlite:////' + os.path.join(project_root, 'database', db_name)
 
 # haven't used this in the templates, currently using exact path on a few files.
 STATIC_DIR = "static"
