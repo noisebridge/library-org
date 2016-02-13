@@ -33,18 +33,18 @@
       <div class="row">
         <span class="book-section-headers col-sm-4">Title</span>
         <span class="book-section-headers col-sm-3">Authors</span>
-        <span class="book-section-headers col-sm-2">Date Published</span>
-        <span class="book-section-headers col-sm-1">Pages</span>
-        <span class="book-section-headers col-sm-2">ISBN</span>
+        <span class="book-section-headers text-right col-sm-2">Date Published</span>
+        <span class="book-section-headers text-right col-sm-1">Pages</span>
+        <span class="book-section-headers text-right col-sm-2">ISBN</span>
       </div>
 
       {% for book in books %}
       <div class="row book-section-entry-container">
         <div class="col-sm-4">{{ book.title }}</div>
         <div class="col-sm-3">{{ book.authors }}</div>
-        <div class="col-sm-2">{{ book.publish_date }}</div>
-        <div class="col-sm-1">{{ book.number_of_pages }}</div>
-        <div class="col-sm-2">{{ book.isbn }}</div>
+        <div class="col-sm-2 text-right">{{ book.publish_date }}</div>
+        <div class="col-sm-1 text-right">{{ book.number_of_pages }}</div>
+        <div class="col-sm-2 text-right">{{ book.isbn }}</div>
       </div>
       {% endfor %}
   </div>
