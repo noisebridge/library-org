@@ -18,12 +18,12 @@
       <div class="col-sm-10 col-sm-offset-1">
         {% if books.has_prev %}
         <span class="pull-left">
-          <a href="{{ url_for('index', page=books.prev_num, s=s) }}">Previous Page</a>
+          <a href="{{ url_for(request.endpoint, page=books.prev_num, s=s) }}">Previous Page</a>
         </span>
         {% endif %}
         {% if books.has_next %}
         <span class="pull-right">
-          <a href="{{ url_for('index', page=books.next_num, s=s) }}">Next Page</a>
+          <a href="{{ url_for(request.endpoint, page=books.next_num, s=s) }}">Next Page</a>
         </span>
         {% endif %}
       </div>
@@ -33,7 +33,7 @@
           {% if page == books.page %}
             <span>{{page}}</span>
           {% else %}
-            <a href="{{ url_for('index', page=page, s=s) }}">{{page}}</a>
+            <a href="{{ url_for(request.endpoint, page=page, s=s) }}">{{page}}</a>
           {% endif %}
         {% endfor %}
       </div>

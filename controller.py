@@ -2,6 +2,7 @@
 """
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import func
 
 import os
 
@@ -73,17 +74,25 @@ def home():
 def all():
     """ Show everything on one page.  
     
-    This feature will eventually become a legacy feature.
+    This feature may eventually become a legacy feature.
     Useful if you wish to use a browser search tool rather than relying on the
     advanced search.
     Depends on the fields you want to search being visible in the template.
     """
     books = Book.query.order_by(Book.title.asc())
-
     return render_template('all.html', books=books)
 
+
+@app.route("/explore/")
+def explore():
+    """ Return a randomized all template.
+    """
+    books = Book.query.order_by(func.random())
+    return render_template('all.html', books=books)
+
+
 @app.route("/index/<int:page>/", methods=["GET","POST"])
-def index(page=1, isbn=None):
+def index(page=1):
     """ Show an index of books, provide some basic searchability.
     
     The two features coded here, pagination and search, will probably be superceded
@@ -102,10 +111,15 @@ def index(page=1, isbn=None):
         s = request.form['search']
         return redirect(url_for('index', page=1, s=s))
 
+    # preserve search throughout navigation
     s = request.args.get('s')
+
+    # do a search if you have a search term
+    # (make this more general for an all fields search)
     if s:
         books = Book.query.order_by(Book.title.asc()).filter(Book.title.contains(s)).paginate(page,PAGINATE_BY_HOWMANY,False)
 
+    # return all books, currently sort by title ascending.
     else:
         books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
 

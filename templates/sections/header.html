@@ -7,9 +7,10 @@
   <header class="wrapper clearfix">
     <div class="row">
 
-      <a href="/index/"><h1 class="title col-sm-8">Dead Tree Library</h1></a>
+      <a href="/index/"><h1 class="title col-sm-6">Dead Tree Library</h1></a>
+
       
-      <div class="col-sm-4 pull-right">
+      <div class="col-sm-4">
         <form class="search-form" action="/index/1/" method="post">
           <fieldset class="form-group">
               <input type="search" name="search" class="form-control" id="search" placeholder="e.g. python" {% if s %} value="{{ s }}" {% endif %}>
@@ -17,6 +18,10 @@
           <button type="submit" class="pull-right btn btn-primary">Search</button>
         </form>
           <a href="/all/"><button type="button" class="pull-left btn btn-default">View All</button></a>
+      </div>
+
+      <div class="col-sm-2">
+        <a href="/explore/"><button type="explore" class="pull-right btn btn-default btn-explore">Explore</button></a>
       </div>
 
     </div>
