@@ -4,21 +4,11 @@
 
 {% block inlinecss %}
 <style type="text/css">
-  .book-list {
-    margin-bottom: 10px;
-  }
-  .pages-list {
+  .explanation-header {
+    padding: 10px;
     text-align: center;
-    margin-bottom: 10px;
-  }
-  .header-spacer {
-    height: 20px;
-  }
-  .book-section-headers {
-    font-weight: bold;
-  }
-  .book-section-entry-container {
-    border-bottom: 1px solid lightgrey;
+    margin: 0 auto;
+    max-width: 600px;
   }
 </style>
 {% endblock %}
@@ -30,7 +20,11 @@
 <div class="row">
   <div class="col-sm-10 col-sm-offset-1">
 
+
       <div class="row">
+
+        <h3 class="explanation-header">Viewing all available books. This page is available in alpha because it allows you to use your browser's find tool (ctrl+f).</h3>
+
         <span class="book-section-headers col-sm-4">Title</span>
         <span class="book-section-headers col-sm-3">Authors</span>
         <span class="book-section-headers text-right col-sm-2">Date Published</span>

@@ -88,7 +88,7 @@ def explore():
     """ Return a randomized all template.
     """
     books = Book.query.order_by(func.random())
-    return render_template('all.html', books=books)
+    return render_template('explore.html', books=books)
 
 
 @app.route("/index/<int:page>/", methods=["GET","POST"])
