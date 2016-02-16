@@ -9,6 +9,7 @@
 
     ServerAdmin admin@ratchet
     ServerName library.noisebridge.systems
+    ServerAlias library.noisebridge.net
 
     DocumentRoot /var/www/library.noisebridge.systems/library-org
 
