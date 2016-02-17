@@ -20,22 +20,31 @@
         <h3 class="explanation-header">Viewing entire library. Use your browser's find tool (ctrl+f) to search every book on one page.</h3>
 
         <span class="book-section-headers col-xs-4">Title</span>
-        <span class="book-section-headers col-xs-3">Authors</span>
-        <span class="book-section-headers text-right col-xs-2">Date Published</span>
-        <span class="book-section-headers text-right col-xs-1">Pages</span>
-        <span class="book-section-headers text-right col-xs-2">ISBN</span>
+        <span class="book-section-headers col-xs-2">Authors</span>
+        <span class="book-section-headers text-right col-xs-2">Published</span>
+        <span class="book-section-headers text-right col-xs-4">Subjects <span class="expand-subjects">(expand)</span></span>
       </div>
 
       {% for book in books %}
       <div class="row book-section-entry-container">
         <div class="col-xs-4"><a href="{{ url_for('detail', id=book.id) }}">{{ book.title }}</a></div>
-        <div class="col-xs-3">{{ book.authors }}</div>
-        <div class="col-xs-2 text-right">{{ book.publish_date }}</div>
-        <div class="col-xs-1 text-right">{{ book.number_of_pages }}</div>
-        <div class="col-xs-2 text-right">{{ book.isbn }}</div>
+        <div class="col-xs-2"><p>{{ book.authors }}</div>
+        <div class="col-xs-2 text-right"><p>{{ book.publish_date }}</div>
+        <div class="subject-field-expander col-xs-4 text-right" data-toggle="tooltip" data-placement="left" data-delay='{"show":0, "hide": 1000}' title="{{ book.subjects }}"><p>{{ book.subjects }}</div>
       </div>
       {% endfor %}
   </div>
 </div>
 
 {% endblock %}
+
+{% block inlinejs %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".expand-subjects").click(function() {
+      $(".subject-field-expander").toggle();
+    });
+  });
+</script>
+{% endblock %}
+

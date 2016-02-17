@@ -30,6 +30,12 @@
     padding: 0;
   }
 }
+.subject-field-expander {
+  display: none;
+}
+.expand-subjects {
+  color: $link-color;
+}
 
 /*** Detail View ***/
 
