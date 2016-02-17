@@ -4,6 +4,9 @@
 
 {% block inlinecss %}
 <style type="text/css">
+.no-openlibrary-preview {
+  font-size: 0.9em;
+}
 
 </style>
 {% endblock %}
@@ -35,7 +38,7 @@
         {% if book.openlibrary_preview_url %}
         <p><span class="detail-view-content"></span><a href="{{ book.openlibrary_preview_url }}" target="_blank">OpenLibrary Preview</a>
         {% else %}
-        <p>[No OpenLibrary Preview]
+        <p class="no-openlibrary-preview">[No OpenLibrary Preview]
         {% endif %}
 
       </div>
