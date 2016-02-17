@@ -17,10 +17,14 @@
   font-weight: bold;
 }
 .explanation-header {
-  padding: 10px;
   text-align: center;
-  margin: 0 auto;
   max-width: 600px;
+
+  margin: 0 auto;
+  padding: 10px 10px 20px 10px;
+
+  color: darkred;
+
 }
 .book-section-entry-container {
   border-bottom: 1px solid lightgrey;
