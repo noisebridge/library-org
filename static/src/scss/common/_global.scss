@@ -7,8 +7,15 @@
   margin-bottom: 10px;
 }
 .pages-list {
-  text-align: right;
+  text-align: left;
   margin-bottom: 10px;
+}
+.paginate-pagenumber-container {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  text-align: right;
+  padding-right: 30px;
 }
 .header-spacer {
   height: 20px;
@@ -24,7 +31,6 @@
   padding: 10px 10px 20px 10px;
 
   color: darkred;
-
 }
 .book-section-entry-container {
   border-bottom: 1px solid lightgrey;

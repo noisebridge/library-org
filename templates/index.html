@@ -17,29 +17,43 @@
     <h3 class="explanation-header">Use the search tool to search by title (this is temporary).  An advanced search tool will be available soon.</h3>
 
     <div class="row">
+
       <div class="col-xs-10 col-xs-offset-1">
-
-        {% if books.has_prev %}
-        <span class="pull-left">
-          <a href="{{ url_for(request.endpoint, page=books.prev_num, s=s) }}">Previous Page</a>
-        </span>
-        {% endif %}
-        {% if books.has_next %}
-        <span class="pull-right">
-          <a href="{{ url_for(request.endpoint, page=books.next_num, s=s) }}">Next Page</a>
-        </span>
-        {% endif %}
+        <p><span style="font-weight: bold;">Search Results:</span> {{ books.total }}</p>
       </div>
 
-      <div class="col-xs-10 col-xs-offset-1 pages-list">
-        {% for page in range(1,books.pages+1) %}
-          {% if page == books.page %}
-            <span>{{page}}</span>
+      {% if books.pages > 1 %}
+        <div class="col-xs-10 col-xs-offset-1">
+
+          <span class="pull-left">
+          {% if books.has_prev %}
+            <a href="{{ url_for(request.endpoint, page=books.prev_num, s=s) }}">Previous Page</a>
           {% else %}
-            <a href="{{ url_for(request.endpoint, page=page, s=s) }}">{{page}}</a>
+            <span>Previous Page</span>
           {% endif %}
-        {% endfor %}
-      </div>
+          </span>
+          <span class="pull-right">
+          {% if books.has_next %}
+            <a href="{{ url_for(request.endpoint, page=books.next_num, s=s) }}">Next Page</a>
+          {% else %}
+            <span>Next Page</span>
+          {% endif %}
+          </span>
+        </div>
+
+        <div class="col-xs-10 col-xs-offset-1 pages-list">
+          {% for page in range(1,books.pages+1) %}
+            {% if page == books.page %}
+              <span class="paginate-pagenumber-container">{{page}}</span>
+            {% else %}
+              <a class="paginate-pagenumber-container" href="{{ url_for(request.endpoint, page=page, s=s) }}">{{page}}</a>
+            {% endif %}
+            {% if page % 20 == 0 %}
+              <br \>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
 
     </div>
 

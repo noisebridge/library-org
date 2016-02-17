@@ -3,6 +3,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
+from sqlalchemy import or_
 
 import os
 
@@ -139,7 +140,7 @@ def index(page=1):
     # do a search if you have a search term
     # (make this more general for an all fields search)
     if s:
-        books = Book.query.order_by(Book.title.asc()).filter(Book.title.contains(s)).paginate(page,PAGINATE_BY_HOWMANY,False)
+        books = Book.query.order_by(Book.title.asc()).filter(or_(Book.title.contains(s), Book.authors.contains(s), Book.subjects.contains(s))).paginate(page,PAGINATE_BY_HOWMANY,False)
 
     # return all books, currently sort by title ascending.
     else:
