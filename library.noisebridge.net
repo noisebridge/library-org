@@ -1,0 +1,40 @@
+#WSGIPythonPath /var/www/library.noisebridge.net/library-org:/var/www/library.noisebridge.net/library-org/venv/lib/python2.7/site-packages
+
+#<VirtualHost 198.199.94.57:8080>
+<VirtualHost *:8080>
+
+    ServerAdmin admin@ratchet
+    ServerName library.noisebridge.net
+    ServerAlias library.noisebridge.systems
+
+    DocumentRoot /var/www/library.noisebridge.net/library-org
+
+    WSGIDaemonProcess library-org user=www-data group=www-data threads=5 python-path=/var/www/library.noisebridge.net/library-org:/var/www/library.noisebridge.net/library-org/venv/lib/python2.7/site-packages
+    WSGIProcessGroup library-org
+
+    <Directory /var/www/library.noisebridge.net/library-org>
+        <Files library-org.wsgi>
+            Allow from all
+        </Files>
+    </Directory>
+
+    WSGIScriptAlias / /var/www/library.noisebridge.net/library-org/library-org.wsgi
+
+
+    Alias /static/ /var/www/library.noisebridge.net/library-org/static/
+    <Directory /var/www/library.noisebridge.net/library-org/static>
+        Allow from all
+    </Directory>
+
+    <Directory /var/www/library.noisebridge.net/library-org>
+        WSGIProcessGroup library-org
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    # Logfiles
+    ErrorLog /var/www/library.noisebridge.net/public_html/logs/error.log
+    CustomLog /var/www/library.noisebridge.net/public_html/logs/access.log combined
+
+</VirtualHost>
