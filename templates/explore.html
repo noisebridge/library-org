@@ -4,12 +4,6 @@
 
 {% block inlinecss %}
 <style type="text/css">
-  .explanation-header {
-    padding: 10px 10px 30px 10px;
-    text-align: center;
-    margin: 0 auto;
-    max-width: 600px;
-  }
 </style>
 {% endblock %}
 
@@ -34,7 +28,7 @@
 
       {% for book in books %}
       <div class="row book-section-entry-container">
-        <div class="col-xs-4">{{ book.title }}</div>
+        <div class="col-xs-4"><a href="{{ url_for('detail', id=book.id) }}">{{ book.title }}</a></div>
         <div class="col-xs-3">{{ book.authors }}</div>
         <div class="col-xs-2 text-right">{{ book.publish_date }}</div>
         <div class="col-xs-1 text-right">{{ book.number_of_pages }}</div>

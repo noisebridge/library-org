@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     # simpledata_list order: 0. isbn, 1. title, 2. # pages, 3. publish_date, 4. authors.
     for k, v in source_data.iteritems():
+
         simpledata_list = list()
         simpledata_list.append(k[5:])
         try:
@@ -34,15 +35,47 @@ if __name__ == "__main__":
             simpledata_list.append(v['publish_date'])
         except KeyError:
             simpledata_list.append("")
-        author_list = ""
+        author_string = ""
         try:
             for author in v['authors']:
-                author_list += author['name']
-                author_list += " "
+                author_string += author['name']
+                author_string += "; "
+            simpledata_list.append(author_string.rstrip(" ;"))
         except KeyError:
-            pass
-        simpledata_list.append(author_list)
-        bookdata = Book(simpledata_list[0], simpledata_list[1], simpledata_list[2], simpledata_list[3], simpledata_list[4])
+            simpledata_list.append("")
+        subject_string = ""
+        try:
+            for subject in v["subjects"]:
+                subject_string += subject["name"]
+                subject_string += "; "
+            simpledata_list.append(subject_string.rstrip(" ;"))
+        except:
+            simpledata_list.append("")
+        try:
+            simpledata_list.append(v["cover"]["medium"])    
+        except:
+            simpledata_list.append("")
+        try:
+            # just take the first preview...
+            simpledata_list.append(v["ebooks"][0]["preview_url"])    
+            print simpledata_list[7]
+        except:
+            simpledata_list.append("")
+            print "preview fail"
+
+
+        # this simpledata_list obviously needs to be a dict,
+        # it wasn't originally clear if this code would
+        # still exist after its first use.
+        # this still may be true so I have not changed it yet.
+        bookdata = Book(simpledata_list[0], 
+                        simpledata_list[1], 
+                        simpledata_list[2], 
+                        simpledata_list[3], 
+                        simpledata_list[4], 
+                        simpledata_list[5],
+                        simpledata_list[6],
+                        simpledata_list[7])
 
         db.session.add(bookdata)
 
@@ -55,23 +88,3 @@ if __name__ == "__main__":
             # this is a crappy exception. i need to handly exactly the ON UNIQUE failure condition
             pass
 
-
-    # query
-    books = Book.query.all()
-    print "all the books: {}".format(books)
-    for book in books:
-        print "onebook: {}, isbn:{}".format(book, book.isbn)
-
-    print "type: {}".format(type(books))
-
-    # filter
-    filter_the_data = Book.query.filter_by(authors='robbins trent').first()
-    print "books by trent robbins only: {}".format(filter_the_data)
-
-    # see SQLAlchemy docs for more filters?
-
-
-""" Bulk extract our fields from json and put them into the SQLAlchemy model.
-
-
-"""

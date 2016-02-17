@@ -48,13 +48,27 @@ class Book(db.Model):
     authors = db.Column(db.String(200), unique=False)
     publish_date = db.Column(db.String(20), unique=False)
     number_of_pages = db.Column(db.String(20), unique=False)
+    subjects = db.Column(db.String(5000), unique=False)
+    openlibrary_medcover_url = db.Column(db.String(500), unique=False)
+    openlibrary_preview_url = db.Column(db.String(500), unique=False)
 
-    def __init__(self, isbn, title, number_of_pages, publish_date, authors):
+    def __init__(self,  isbn, 
+                        title, 
+                        number_of_pages, 
+                        publish_date, 
+                        authors,
+                        subjects,
+                        openlibrary_medcover_url,
+                        openlibrary_preview_url):
+
         self.isbn = isbn
         self.title = title
         self.authors = authors
         self.publish_date = publish_date
         self.number_of_pages = number_of_pages
+        self.subjects = subjects
+        self.openlibrary_medcover_url = openlibrary_medcover_url
+        self.openlibrary_preview_url = openlibrary_preview_url
 
     def __repr__(self):
         return '<Title: >'.format(self.title)
@@ -81,6 +95,14 @@ def all():
     """
     books = Book.query.order_by(Book.title.asc())
     return render_template('all.html', books=books)
+
+@app.route("/detail/<int:id>/")
+def detail(id=1):
+    """ Show an individual work
+    """
+    
+    book = Book.query.get(id)
+    return render_template('detail.html', book=book)
 
 
 @app.route("/explore/")

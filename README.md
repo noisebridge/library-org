@@ -14,3 +14,9 @@ Alpha released.
 1. Advanced Search
 2. API
 3. New Book submit-by-isbn with requests to multiple services. User selects service to pull data from.
+
+
+### API Options:
+
+Programmable Web lists 49 library APIs:
+http://www.programmableweb.com/category/library%2Breference/apis?category=20272%2C20066

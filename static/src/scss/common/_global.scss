@@ -1,7 +1,7 @@
 
 
 
-/* index as of Feb 13 2015 */
+/* index, all, search */
 
 .book-list {
   margin-bottom: 10px;
@@ -16,6 +16,38 @@
 .book-section-headers {
   font-weight: bold;
 }
+.explanation-header {
+  padding: 10px;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 600px;
+}
 .book-section-entry-container {
   border-bottom: 1px solid lightgrey;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/*** Detail View ***/
+
+.detail-view-container {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.detail-view-image > img {
+  width: 100%;
+  border: 3px solid black;
+}
+.detail-view-fields {
+  padding: 15px;
+}
+.detail-view-content {
+  font-weight: bold;
+}
+.detail-view-title {
+  font-weight: bold;
+  font-size: 1.1em;
 }
