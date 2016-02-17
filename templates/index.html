@@ -14,13 +14,15 @@
 <div class="row">
   <div class="col-xs-10 col-xs-offset-1">
 
-    <h3 class="explanation-header">Use the search tool to search by title (this is temporary).  An advanced search tool will be available soon.</h3>
+    <h3 class="explanation-header">Search title, authors, and subjects above.</h3>
 
     <div class="row">
 
+      {% if s %}
       <div class="col-xs-10 col-xs-offset-1">
         <p><span style="font-weight: bold;">Search Results:</span> {{ books.total }}</p>
       </div>
+      {% endif %}
 
       {% if books.pages > 1 %}
         <div class="col-xs-10 col-xs-offset-1">
