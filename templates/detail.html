@@ -31,9 +31,9 @@
         <p><span class="detail-view-content">Pages: </span>{{ book.number_of_pages }}</p>
         <p><span class="detail-view-content">ISBN: </span>{{ book.isbn }}</p>
         <p><span class="detail-view-content">Subjects: </span>{{ book.subjects }}</p>
+        <p><span class="detail-view-content"></span><a href="http://www.amazon.com/gp/search?index=books&field-isbn={{ book.isbn }}" target="_blank">Amazon Search</a>
         {% if book.openlibrary_preview_url %}
         <p><span class="detail-view-content"></span><a href="{{ book.openlibrary_preview_url }}" target="_blank">OpenLibrary Preview</a>
-        <p><span class="detail-view-content"></span><a href="http://www.amazon.com/gp/search?index=books&field-isbn={{ book.isbn }}" target="_blank">Amazon Search</a>
         {% else %}
         <p>[No OpenLibrary Preview]
         {% endif %}
