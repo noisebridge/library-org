@@ -69,11 +69,12 @@ class Book(db.Model):
     isbn = db.Column(db.String(20), unique=True)
     title = db.Column(db.String(200), unique=False)
     authors = db.Column(db.String(200), unique=False)
-    publish_date = db.Column(db.String(20), unique=False)
-    number_of_pages = db.Column(db.String(20), unique=False)
+    publish_date = db.Column(db.String(30), unique=False)
+    number_of_pages = db.Column(db.String(10), unique=False)
     subjects = db.Column(db.String(5000), unique=False)
     openlibrary_medcover_url = db.Column(db.String(500), unique=False)
     openlibrary_preview_url = db.Column(db.String(500), unique=False)
+    dewey_decimal_class = db.Column(db.String(50), unique=False)
 
     def __init__(self,  isbn, 
                         title, 
@@ -82,7 +83,8 @@ class Book(db.Model):
                         authors,
                         subjects,
                         openlibrary_medcover_url,
-                        openlibrary_preview_url):
+                        openlibrary_preview_url,
+                        dewey_decimal_class):
 
         self.isbn = isbn
         self.title = title
@@ -92,6 +94,7 @@ class Book(db.Model):
         self.subjects = subjects
         self.openlibrary_medcover_url = openlibrary_medcover_url
         self.openlibrary_preview_url = openlibrary_preview_url
+        self.dewey_decimal_class = dewey_decimal_class
 
     def __repr__(self):
         return '<Title: >'.format(self.title)
