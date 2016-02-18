@@ -7,7 +7,6 @@
 .no-openlibrary-preview {
   font-size: 0.9em;
 }
-
 </style>
 {% endblock %}
 
@@ -15,36 +14,6 @@
 
 <div class="header-spacer"></div>
 
-<div class="row">
-  <div class="col-xs-10 col-xs-offset-1">
-
-    <div class="row detail-view-container">
-      <div class="col-xs-4 detail-view-image">
-        {% if book.openlibrary_medcover_url %}
-          <img src="{{ book.openlibrary_medcover_url }}">
-        {% else %}
-          <img src="/static/dist/images/lincoln-inaug-bible.jpg">
-        {% endif %}
-      </div>
-
-      <div class="col-xs-8 detail-view-fields">
-        <p><span class="detail-view-title">{{ book.title }}</span></p>
-        <p><span class="detail-view-content">Author(s): </span>{{ book.authors }}</p>
-        <p><span class="detail-view-content">Published: </span>{{ book.publish_date }}</p>
-        <p><span class="detail-view-content">Pages: </span>{{ book.number_of_pages }}</p>
-        <p><span class="detail-view-content">ISBN: </span>{{ book.isbn }}</p>
-        <p><span class="detail-view-content">Subjects: </span>{{ book.subjects }}</p>
-        <p><span class="detail-view-content"></span><a href="http://www.amazon.com/gp/search?index=books&field-isbn={{ book.isbn }}" target="_blank">Amazon Search</a>
-        {% if book.openlibrary_preview_url %}
-        <p><span class="detail-view-content"></span><a href="{{ book.openlibrary_preview_url }}" target="_blank">OpenLibrary Preview</a>
-        {% else %}
-        <p class="no-openlibrary-preview">[No OpenLibrary Preview]
-        {% endif %}
-
-      </div>
-    </div>
-
-  </div>
-</div>
+{% include "sections/bookdetailpage.html" %}
 
 {% endblock %}
