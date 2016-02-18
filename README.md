@@ -10,11 +10,11 @@ Alpha released.
 
 ##### Getting Started
 1. fork and clone this repository
-2. create and activate a [virtualenv] (https://virtualenv.pypa.io)
+2. [create] (https://virtualenvwrapper.readthedocs.org) and activate a [virtualenv] (https://virtualenv.pypa.io)
 3. pip install -r requirements.txt
 4. cd static && npm install && gulp
 5. python controller.py
-6. go to localhost:5000 in the browser
+6. go to [localhost:5000] (http://localhost:5000) in the browser
 
 
 ##### Features on-deck:
