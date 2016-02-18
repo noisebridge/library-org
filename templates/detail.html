@@ -12,6 +12,12 @@
 
 {% block main %}
 
+{% if newbookflash %}
+  <div class="alert alert-success">
+    <strong>Success! Book added.</strong>  It can now go on the shelf.
+  </div>
+{% endif %}
+
 <div class="header-spacer"></div>
 
 {% include "sections/bookdetailpage.html" %}

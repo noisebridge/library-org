@@ -1,12 +1,5 @@
-
-from controller import db, Book
-from sqlalchemy.exc import IntegrityError
-
-# import this to build a database
-# no idea why you would want this, but it can be used as a base for manual fixtures or something.
-db.create_all()
-
-
+""" Request methods for rendering requested ISBNs.
+"""
 def reorganize_openlibrary_data(k, v):
     """ Prepare openlibrary data to become a book object.
     """
@@ -64,8 +57,14 @@ def reorganize_openlibrary_data(k, v):
 if __name__ == "__main__":
     """
     """
+    from controller import db, Book
+    from sqlalchemy.exc import IntegrityError
 
     import json
+
+    # import this to build a database
+    # no idea why you would want this, but it can be used as a base for manual fixtures or something.
+    db.create_all()
 
     sourcejsonfile = "dataman/isbn_response_data.020316.2343.json"
 

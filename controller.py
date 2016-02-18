@@ -1,12 +1,17 @@
 """
 """
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 
 from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, TextField, validators
+
+from request_book import reorganize_openlibrary_data
+import requests
+import json
 
 import os
 
@@ -128,6 +133,42 @@ def home():
     return redirect(url_for('index', page=1))
 
 
+@app.route("/submit/")
+def submit():
+    bookdata_list = session.get('bookdata', None)
+    session.clear()
+    if bookdata_list:
+        bookdata_list = json.loads(bookdata_list)
+        # this bookdata_list obviously needs to be a dict,
+        # it wasn't originally clear if this code would
+        # still exist after its first use.
+        # this still may be true so I have not changed it yet.
+        # note: this should probably be abstracted for use by request_book.py and here. 
+        bookdata = Book(bookdata_list[0], 
+                        bookdata_list[1], 
+                        bookdata_list[2], 
+                        bookdata_list[3], 
+                        bookdata_list[4], 
+                        bookdata_list[5],
+                        bookdata_list[6],
+                        bookdata_list[7],
+                        bookdata_list[8])
+    else:
+        return("no book!")
+
+    try:
+        db.session.add(bookdata)
+        db.session.commit()
+        session["newbookflash"] = True
+        return redirect(url_for('detail', id=bookdata.id))
+
+    except IntegrityError:
+        db.session.rollback()
+        return("book already exists. how did you get here?")
+
+
+
+
 @app.route("/new/", methods=('GET', 'POST'))
 def new_isbn(isbn=None):
     """ Allow a new ISBN to be added to the book database.
@@ -147,8 +188,48 @@ def new_isbn(isbn=None):
             # make a book object, render it, and if the user submits, then ingest it.
             # SO -  we need to get the ingestion script repackaged so a single run of the ingester
             #       can be imported as a function.
-            # return render_template("new_isbn.html", form=form, isbn=isbn, book=book, isbn_exists=False)
-            pass
+            URL = "https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&jscmd=data&format=json"
+            r = requests.get(URL.format(isbn=isbn))
+
+            if(r.status_code == 200):
+
+                if r.json():
+                    bookdata_list = reorganize_openlibrary_data("ISBN:"+isbn, r.json()["ISBN:"+isbn])
+
+                    session['bookdata'] = json.dumps(bookdata_list)
+
+                    # this bookdata_list obviously needs to be a dict,
+                    # it wasn't originally clear if this code would
+                    # still exist after its first use.
+                    # this still may be true so I have not changed it yet.
+                    # note: this should probably be abstracted for use by request_book.py and here. 
+                    # KEY POINT: this is only done here too because we need to send it to the template.
+                    bookdata = Book(bookdata_list[0], 
+                                    bookdata_list[1], 
+                                    bookdata_list[2], 
+                                    bookdata_list[3], 
+                                    bookdata_list[4], 
+                                    bookdata_list[5],
+                                    bookdata_list[6],
+                                    bookdata_list[7],
+                                    bookdata_list[8])
+
+                    return render_template("new_isbn.html", form=form, isbn=isbn, book=bookdata, isbn_exists=False)
+
+                    # this doesn't go here, this happens when the user verifies the book is right
+                    #db.session.add(bookdata)
+                else:
+                    pass
+                    # render an error notifying the user the isbn was not found.
+                    # store the isbn in another model? have the user try again?
+                    # this needs a smidge of consideration.
+            else:
+                pass
+                # render an error flash/alert and tell the user to check their internet connection and try again.
+
+
+
+
 
     return render_template("new_isbn.html", form=form, isbn=isbn)
 
@@ -170,8 +251,12 @@ def all():
 def detail(id=1):
     """ Show an individual work
     """
+
+    newbookflash = session.get("newbookflash", False)
+    session.clear()
+
     book = Book.query.get(id)
-    return render_template('detail.html', book=book)
+    return render_template('detail.html', book=book, newbookflash=newbookflash)
 
 
 @app.route("/explore/")
