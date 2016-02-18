@@ -127,12 +127,25 @@ def home():
 
 @app.route("/new/", methods=('GET', 'POST'))
 def new_isbn(isbn=None):
+    """ Allow a new ISBN to be added to the book database.
+    """
     form = ISBNForm(request.form)
     if request.method == "GET":
         pass
 
     if request.method == "POST" and form.validate():
         isbn = form.isbn.data
+        print type(isbn)
+        isbn_exists = Book.query.filter_by(isbn=isbn).first()
+
+        if isbn_exists:
+            return render_template("new_isbn.html", form=form, isbn=isbn, book=isbn_exists, isbn_exists=True)
+        else:
+            # make a book object, render it, and if the user submits, then ingest it.
+            # SO -  we need to get the ingestion script repackaged so a single run of the ingester
+            #       can be imported as a function.
+            # return render_template("new_isbn.html", form=form, isbn=isbn, book=book, isbn_exists=False)
+            pass
 
     return render_template("new_isbn.html", form=form, isbn=isbn)
 
@@ -154,7 +167,6 @@ def all():
 def detail(id=1):
     """ Show an individual work
     """
-    
     book = Book.query.get(id)
     return render_template('detail.html', book=book)
 
