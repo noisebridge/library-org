@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from sqlalchemy import or_
 
+from flask_wtf import Form, RecaptchaField
+from wtforms import StringField, TextField, validators
+
 import os
 
 DB_DIR = "database"
@@ -22,11 +25,30 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_db
 db = SQLAlchemy(app)
 
+PAGINATE_BY_HOWMANY = 15
+
+### recaptcha disabled until we have a real config file.
+#RECAPTCHA_PARAMETERS = {'hl': 'zh', 'render': 'explicit'}
+#RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
+#app.config['RECAPTCHA_USE_SSL'] = False
+
+###
+### NEEDS TOGGLED IN PRODUCTION, USE A CONFIG FILE IN THE FUTURE.
+### 
+
 # flask will reload itself on changes when debug is True
 # flask can execute arbitrary code if you set this True
 app.debug = True 
+app.secret_key = "flask development key"
+WTF_CSRF_SECRET_KEY = "flask-wtf development key"
+### recaptcha disabled until we have a real config file.
+#app.config['RECAPTCHA_PUBLIC_KEY'] = 'dev pub k'
+#app.config['RECAPTCHA_PRIVATE_KEY'] = 'dev pub k'
 
-PAGINATE_BY_HOWMANY = 15
+###
+### END PRODUCTION TOGGLES
+###
+
 
 
 class Book(db.Model):
@@ -74,16 +96,46 @@ class Book(db.Model):
     def __repr__(self):
         return '<Title: >'.format(self.title)
 
+
+class ISBNForm(Form):
+    isbn = StringField('isbn', [validators.Length(min=10, max=13), validators.Regexp(r'^[0-9X]*$')])
+
+
+class SampleForm(Form):
+    name = StringField('name', validators=[validators.DataRequired()])
+
+@app.route("/sampleform/", methods=('GET', 'POST'))
+def sampleform():
+    form = SampleForm()
+    if form.validate_on_submit():
+        return redirect("/sampleform")
+    return render_template("sampleform.html", form=form)
+
+
 @app.route("/test/")
 def test():
     """ Test frontend integration
     """
     return render_template('test.html')
 
+
 @app.route("/index/")
 @app.route("/")
 def home():
     return redirect(url_for('index', page=1))
+
+
+@app.route("/new/", methods=('GET', 'POST'))
+def new_isbn(isbn=None):
+    form = ISBNForm(request.form)
+    if request.method == "GET":
+        pass
+
+    if request.method == "POST" and form.validate():
+        isbn = form.isbn.data
+
+    return render_template("new_isbn.html", form=form, isbn=isbn)
+
 
 @app.route("/all/")
 def all():
@@ -96,6 +148,7 @@ def all():
     """
     books = Book.query.order_by(Book.title.asc())
     return render_template('all.html', books=books)
+
 
 @app.route("/detail/<int:id>/")
 def detail(id=1):

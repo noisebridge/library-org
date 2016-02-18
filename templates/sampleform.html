@@ -1,0 +1,8 @@
+
+<form method="POST" action="/sampleform">
+    {{ form.hidden_tag() }}
+
+    {{ form.name.label }} {{ form.name(size=20) }}
+
+    <input type="submit" value="Go">
+</form>
