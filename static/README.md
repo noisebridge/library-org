@@ -2,17 +2,24 @@
 ## TODO:
 Looks like there isn't any default css minifier. Add one! See sage/roots gulpfile.
 
-## Status:
-Bower has been installed, gulp has been installed.  Dependencies are now kept in source control.
+## Dependencies:
+1. NodeJS
+2. Bower
+3. Gulp
+
+## Instructions
 In order to unpack this project in a new space:
-    1. install npm, gulp, bower.
-    2. gulp has dependencies in gulpfile.js, bower has dependencies in bower.json.
-    3. Put your assets in the src folder.
-    4. node_modules, dist (compiled destination of src files), and bower_components are not kept under source control. These can be rebuilt by installing each. dist is built by running 'gulp'
+1. install NodeJS (on OS X: `brew install node`)
+2. npm install -g bower gulp
+3. npm install
+4. bower install
+5. gulp
+Put your assets in the src folder.
+The directories `node_modules`, `dist` (compiled destination of src files), and `bower_components` are not kept under source control. These can be rebuilt by installing each. `dist` is built by running 'gulp'
 
 ## Notes:
 This git repository is very conservative, only ignoring the following: node_modules.
-The purpose of this is to allow particular projects 
+The purpose of this is to allow particular projects
 A bower init has already been completed. This may need revisited.
 
 There are options in gulpfule.js to make the bower command install or update.
