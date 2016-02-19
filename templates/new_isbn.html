@@ -21,10 +21,10 @@
 
     {% from "_formhelpers.html" import render_field %}
     <form class="new-isbn-form" method="POST" action="/new/">
-      {{ form.hidden_tag() }}
+      {{ isbn_form.hidden_tag() }}
 
       <fieldset class="form-group">
-        {{ render_field(form.isbn, class="form-control", placeholder="[0-9] and X only. no hyphens. 10 or 13 characters.") }}
+        {{ render_field(isbn_form.isbn, class="form-control", placeholder="[0-9] and X only. no hyphens. 10 or 13 characters.") }}
       </fieldset>
 
       <button type="submit" class="btn btn-default">Check</button>
@@ -45,7 +45,16 @@
         <h3 class="explanation-header">ISBN already exists!</h3>
         <h3 class="explanation-header">The book is ready to go on the shelf (we don't track quantity).</h3>
       {% else %}
-        <a href={{ url_for('submit') }}><button type="submit" class="btn btn-primary">Verify and Submit</button></a>
+				{% from "_formhelpers.html" import render_field %}
+				<form class="new-isbn-form" method="POST" action="/submit/">
+					{{ secret_form.hidden_tag() }}
+
+					<fieldset class="form-group">
+						{{ render_field(secret_form.secret, class="form-control", placeholder="Please enter the secret passphrase here.") }}
+					</fieldset>
+
+					<button type="submit" class="btn btn-primary">Verify and Submit</button>
+				</form>
       {% endif %}
     </div>
   </div>

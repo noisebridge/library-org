@@ -32,6 +32,8 @@ db = SQLAlchemy(app)
 
 PAGINATE_BY_HOWMANY = 15
 
+NEW_ISBN_SUBMIT_SECRET = "Organize all the things!"
+
 ### recaptcha disabled until we have a real config file.
 #RECAPTCHA_PARAMETERS = {'hl': 'zh', 'render': 'explicit'}
 #RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
@@ -109,6 +111,10 @@ class ISBNForm(Form):
     isbn = StringField('isbn', [validators.Length(min=10, max=13), validators.Regexp(r'^[0-9X]*$')])
 
 
+class ISBNSubmitForm(Form):
+    secret = StringField('isbn', [validators.Length(min=1, max=200)])
+
+
 class SampleForm(Form):
     name = StringField('name', validators=[validators.DataRequired()])
 
@@ -133,8 +139,17 @@ def home():
     return redirect(url_for('index', page=1))
 
 
-@app.route("/submit/")
-def submit():
+@app.route("/submit/", methods=("GET","POST"))
+def submit(secret=None):
+    secret_form = ISBNSubmitForm(request.form)
+    if request.method == "GET":
+        return redirect(url_for('new_isbn'))
+    if request.method == "POST" and secret_form.validate(): 
+        secret = secret_form.secret.data
+
+    if secret != NEW_ISBN_SUBMIT_SECRET:
+        return("Bad Secret, try again. This page will be more friendly later :-)")
+
     bookdata_list = session.get('bookdata', None)
     session.clear()
     if bookdata_list:
@@ -173,17 +188,18 @@ def submit():
 def new_isbn(isbn=None):
     """ Allow a new ISBN to be added to the book database.
     """
-    form = ISBNForm(request.form)
+    isbn_form = ISBNForm(request.form)
+    secret_form = ISBNSubmitForm(request.form)
     if request.method == "GET":
         pass
 
-    if request.method == "POST" and form.validate():
-        isbn = form.isbn.data
+    if request.method == "POST" and isbn_form.validate():
+        isbn = isbn_form.isbn.data
         print type(isbn)
         isbn_exists = Book.query.filter_by(isbn=isbn).first()
 
         if isbn_exists:
-            return render_template("new_isbn.html", form=form, isbn=isbn, book=isbn_exists, isbn_exists=True)
+            return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=isbn_exists, isbn_exists=True)
         else:
             # make a book object, render it, and if the user submits, then ingest it.
             # SO -  we need to get the ingestion script repackaged so a single run of the ingester
@@ -214,24 +230,18 @@ def new_isbn(isbn=None):
                                     bookdata_list[7],
                                     bookdata_list[8])
 
-                    return render_template("new_isbn.html", form=form, isbn=isbn, book=bookdata, isbn_exists=False)
+                    return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=bookdata, isbn_exists=False)
 
                     # this doesn't go here, this happens when the user verifies the book is right
                     #db.session.add(bookdata)
                 else:
                     pass
-                    # render an error notifying the user the isbn was not found.
-                    # store the isbn in another model? have the user try again?
-                    # this needs a smidge of consideration.
+                    # this is rendered as logic in the view lol
             else:
                 pass
-                # render an error flash/alert and tell the user to check their internet connection and try again.
+                # this is rendered as logic in the view lol
 
-
-
-
-
-    return render_template("new_isbn.html", form=form, isbn=isbn)
+    return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn)
 
 
 @app.route("/all/")
