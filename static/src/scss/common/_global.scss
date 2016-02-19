@@ -1,7 +1,20 @@
 
 
-
 /* index, all, search */
+
+body {
+  background-image: url('images/Nb_2169_sticker-10p-opacity.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.height-controller {
+  min-height: 600px;
+
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
 
 .book-list {
   margin-bottom: 10px;
@@ -16,9 +29,6 @@
   display: inline-block;
   text-align: right;
   padding-right: 30px;
-}
-.header-spacer {
-  height: 20px;
 }
 .book-section-headers {
   font-weight: bold;
@@ -45,6 +55,7 @@
 }
 .toggle-subjects {
   color: $link-color;
+  cursor: pointer;
 }
 
 /*** Detail View ***/
@@ -66,4 +77,35 @@
 .detail-view-title {
   font-weight: bold;
   font-size: 1.1em;
+}
+
+/* ===================
+    h5bp theme overrides
+   =================== */
+
+.header-container {
+    border-bottom: 20px solid #ED1C24;
+}
+
+.footer-container {
+    background-image: url('images/nb-library-1920-300.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 300px;
+}
+
+.footer-container,
+.main aside {
+    border-top: 20px solid #ED1C24;
+}
+
+.header-container,
+// .footer-container,
+.main aside {
+    background: black;
+}
+
+.title {
+    color: red;
+    font-weight: bold;
 }
