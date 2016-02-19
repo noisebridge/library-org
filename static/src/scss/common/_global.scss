@@ -88,13 +88,18 @@ body {
 }
 
 .footer-container {
-    background-image: url('images/nb-library-1920-300.png');
+    background-image: url('images/header1.jpg');
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
     height: 300px;
 }
 
-.footer-container,
+.footer-container {
+    border-top: 20px solid #ED1C24;
+    border-bottom: 20px solid #ED1C24;
+}
+
 .main aside {
     border-top: 20px solid #ED1C24;
 }
@@ -102,7 +107,7 @@ body {
 .header-container,
 // .footer-container,
 .main aside {
-    background: black;
+    background-color: black;
 }
 
 .title {
