@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "library.cfg"
 CONFIG_PATH = os.path.join(PROJECT_ROOT, CONFIG_FILE)
 CONFIG = SafeConfigParser()
-CONFIG.read(CONFIG_FILE)
+CONFIG.read(CONFIG_PATH)
 
 # Configuration Secrets
 APP_SECRET_KEY = CONFIG.get("secrets", "APP_SECRET_KEY")
