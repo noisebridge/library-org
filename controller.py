@@ -10,10 +10,25 @@ from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, TextField, validators
 
 from request_book import reorganize_openlibrary_data
+
 import requests
 import json
 
 import os
+
+from ConfigParser import SafeConfigParser
+
+CONFIG_FILE = "library.cfg"
+
+CONFIG = SafeConfigParser()
+CONFIG.read(CONFIG_FILE)
+
+# Configuration Secrets
+APP_SECRET_KEY = CONFIG.get("secrets", "APP_SECRET_KEY")
+WTF_CSRF_SECRET_KEY = CONFIG.get("secrets", "WTF_CSRF_SECRET_KEY")
+NEW_ISBN_SUBMIT_SECRET = CONFIG.get("secrets", "NEW_ISBN_SUBMIT_SECRET")
+RECAPTCHA_PUBLIC_KEY = CONFIG.get("secrets", "RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = CONFIG.get("secrets", "RECAPTCHA_PRIVATE_KEY")
 
 DB_DIR = "database"
 db_name = 'books.sqlite'
@@ -26,35 +41,23 @@ STATIC_DIR = "static"
 
 app = Flask(__name__)
 
+app.secret_key = APP_SECRET_KEY
+
+# flask will reload itself on changes when debug is True
+# flask can execute arbitrary code if you set this True
+app.debug = False
+
 #sqlalchemy configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_db
 db = SQLAlchemy(app)
 
 PAGINATE_BY_HOWMANY = 15
 
-NEW_ISBN_SUBMIT_SECRET = "Organize all the things!"
-
-### recaptcha disabled until we have a real config file.
+# == recaptcha ==
+# recaptcha disabled - it is ready to be implemented now
 #RECAPTCHA_PARAMETERS = {'hl': 'zh', 'render': 'explicit'}
 #RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 #app.config['RECAPTCHA_USE_SSL'] = False
-
-###
-### NEEDS TOGGLED IN PRODUCTION, USE A CONFIG FILE IN THE FUTURE.
-### 
-
-# flask will reload itself on changes when debug is True
-# flask can execute arbitrary code if you set this True
-app.debug = True 
-app.secret_key = "flask development key"
-WTF_CSRF_SECRET_KEY = "flask-wtf development key"
-### recaptcha disabled until we have a real config file.
-#app.config['RECAPTCHA_PUBLIC_KEY'] = 'dev pub k'
-#app.config['RECAPTCHA_PRIVATE_KEY'] = 'dev pub k'
-
-###
-### END PRODUCTION TOGGLES
-###
 
 
 
