@@ -18,8 +18,11 @@ import os
 
 from ConfigParser import SafeConfigParser
 
-CONFIG_FILE = "library.cfg"
 
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+
+CONFIG_FILE = "library.cfg"
+CONFIG_PATH = os.path.join(PROJECT_ROOT, CONFIG_FILE)
 CONFIG = SafeConfigParser()
 CONFIG.read(CONFIG_FILE)
 
@@ -30,13 +33,12 @@ NEW_ISBN_SUBMIT_SECRET = CONFIG.get("secrets", "NEW_ISBN_SUBMIT_SECRET")
 RECAPTCHA_PUBLIC_KEY = CONFIG.get("secrets", "RECAPTCHA_PUBLIC_KEY")
 RECAPTCHA_PRIVATE_KEY = CONFIG.get("secrets", "RECAPTCHA_PRIVATE_KEY")
 
-DB_DIR = "database"
 db_name = 'books.sqlite'
-project_root = os.path.dirname(os.path.realpath(__file__))
-
-sqlite_db = 'sqlite:////' + os.path.join(project_root, 'database', db_name)
+DB_DIR = "database"
+sqlite_db = 'sqlite:////' + os.path.join(PROJECT_ROOT, 'database', db_name)
 
 # haven't used this in the templates, currently using exact path on a few files.
+# not even sure if this django style approach works with flask
 STATIC_DIR = "static"
 
 app = Flask(__name__)
