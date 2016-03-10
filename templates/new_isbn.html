@@ -34,7 +34,6 @@
 </div>
 
 {% if book %}
-  {% include "sections/bookdetailpage.html" %}
   <div class="row">
     <div class="col-xs-6 col-xs-offset-3 text-center">
       {% if isbn_exists %}
@@ -54,6 +53,7 @@
       {% endif %}
     </div>
   </div>
+  {% include "sections/bookdetailpage.html" %}
 {% elif isbn %}
 <div class="row">
   <div class="col-xs-6 col-xs-offset-3 text-center">
