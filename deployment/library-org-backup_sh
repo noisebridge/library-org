@@ -1,0 +1,10 @@
+#!/bin/bash
+
+now=$(date +"%Y%m%d_%H%M%S")
+
+sourcemachine="robbintt@ratchet:"
+sourcepath="/var/www/library.noisebridge.net/library-org/database/books.sqlite"
+
+echo $sourcemachine$sourcepath
+
+scp "$sourcemachine$sourcepath" "books.$now.sqlite"
