@@ -148,7 +148,7 @@ def home():
 def submit(secret=None):
     secret_form = ISBNSubmitForm(request.form)
     if request.method == "GET":
-        return redirect(url_for('new_isbn'))
+        return redirect(url_for('new_book'))
     if request.method == "POST" and secret_form.validate(): 
         secret = secret_form.secret.data
 
@@ -190,7 +190,7 @@ def submit(secret=None):
 
 
 @app.route("/new/", methods=('GET', 'POST'))
-def new_isbn(isbn=None):
+def new_book(isbn=None):
     """ Allow a new ISBN to be added to the book database.
     """
     isbn_form = ISBNForm(request.form)
@@ -204,7 +204,7 @@ def new_isbn(isbn=None):
         isbn_exists = Book.query.filter_by(isbn=isbn).first()
 
         if isbn_exists:
-            return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=isbn_exists, isbn_exists=True)
+            return render_template("new_book.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=isbn_exists, isbn_exists=True)
         else:
             # make a book object, render it, and if the user submits, then ingest it.
             # SO -  we need to get the ingestion script repackaged so a single run of the ingester
@@ -235,7 +235,7 @@ def new_isbn(isbn=None):
                                     bookdata_list[7],
                                     bookdata_list[8])
 
-                    return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=bookdata, isbn_exists=False)
+                    return render_template("new_book.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=bookdata, isbn_exists=False)
 
                     # this doesn't go here, this happens when the user verifies the book is right
                     #db.session.add(bookdata)
@@ -246,7 +246,7 @@ def new_isbn(isbn=None):
                 pass
                 # this is rendered as logic in the view lol
 
-    return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn)
+    return render_template("new_book.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn)
 
 
 @app.route("/all/")
