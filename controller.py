@@ -127,7 +127,7 @@ class ManualForm(Form):
     publish_date = StringField('publish_date', [validators.Length(max=30)], description='Published')
     number_of_pages = StringField('number_of_pages', [validators.Length(max=10)], description='Pages')
     subjects = StringField('subjects', [validators.Length(max=5000)], description='Subjects')
-    cover = StringField('cover_url', [validators.Optional(), validators.Length(max=500), validators.URL(require_tld=True)], description='Cover Image URL')
+    cover_url = StringField('cover_url', [validators.Optional(), validators.Length(max=500), validators.URL(require_tld=True)], description='Cover Image URL')
     preview_url = StringField('preview_url', [validators.Optional(), validators.Length(max=500), validators.URL(require_tld=True)], description='Preview URL')
     dewey_decimal_class = StringField('dewey_decimal_class', [validators.Length(max=50)], description='Dewey Decimal Class')
 

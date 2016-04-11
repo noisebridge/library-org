@@ -60,7 +60,7 @@ def reorganize_manual_data(fields):
         data_dict[field.label.text] = field.data
 
     simpledata_list = list()
-    def simpledata_try_append(label, dict=data_dict):
+    def try_get_value(label, dict=data_dict):
         """ Give field label, returns its data or empty string.
 
         Implemented to avoid multiple trys and excepts.
@@ -70,15 +70,16 @@ def reorganize_manual_data(fields):
             return dict[label]
         except KeyError:
             return ''
-    simpledata_list.append(simpledata_try_append('isbn'))
-    simpledata_list.append(simpledata_try_append('title'))
-    simpledata_list.append(simpledata_try_append('number_of_pages'))
-    simpledata_list.append(simpledata_try_append('publish_date'))
-    simpledata_list.append(simpledata_try_append('authors'))
-    simpledata_list.append(simpledata_try_append('subjects'))
-    simpledata_list.append(simpledata_try_append('cover_url'))
-    simpledata_list.append(simpledata_try_append('preview_url'))
-    simpledata_list.append(simpledata_try_append('dewey_decimal_class'))
+
+    simpledata_list.append(try_get_value('isbn'))
+    simpledata_list.append(try_get_value('title'))
+    simpledata_list.append(try_get_value('number_of_pages'))
+    simpledata_list.append(try_get_value('publish_date'))
+    simpledata_list.append(try_get_value('authors'))
+    simpledata_list.append(try_get_value('subjects'))
+    simpledata_list.append(try_get_value('cover_url'))
+    simpledata_list.append(try_get_value('preview_url'))
+    simpledata_list.append(try_get_value('dewey_decimal_class'))
 
     return simpledata_list
 
