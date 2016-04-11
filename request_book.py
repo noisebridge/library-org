@@ -34,12 +34,12 @@ def reorganize_openlibrary_data(k, v):
     except:
         simpledata_list.append("")
     try:
-        simpledata_list.append(v["cover"]["medium"])    
+        simpledata_list.append(v["cover"]["medium"])
     except:
         simpledata_list.append("")
     try:
         # just take the first preview...
-        simpledata_list.append(v["ebooks"][0]["preview_url"])    
+        simpledata_list.append(v["ebooks"][0]["preview_url"])
     except:
         simpledata_list.append("")
     try:
@@ -50,6 +50,35 @@ def reorganize_openlibrary_data(k, v):
         simpledata_list.append(dewey_string.rstrip(" ;"))
     except:
         simpledata_list.append("")
+
+    return simpledata_list
+
+
+def reorganize_manual_data(fields):
+    data_dict = dict()
+    for field in fields:
+        data_dict[field.label.text] = field.data
+
+    simpledata_list = list()
+    def simpledata_try_append(label, dict=data_dict):
+        """ Give field label, returns its data or empty string.
+
+        Implemented to avoid multiple trys and excepts.
+        Since the user already formatted the data, no more processing is needed.
+        """
+        try:
+            return dict[label]
+        except KeyError:
+            return ''
+    simpledata_list.append(simpledata_try_append('isbn'))
+    simpledata_list.append(simpledata_try_append('title'))
+    simpledata_list.append(simpledata_try_append('number_of_pages'))
+    simpledata_list.append(simpledata_try_append('publish_date'))
+    simpledata_list.append(simpledata_try_append('authors'))
+    simpledata_list.append(simpledata_try_append('subjects'))
+    simpledata_list.append(simpledata_try_append('cover_url'))
+    simpledata_list.append(simpledata_try_append('preview_url'))
+    simpledata_list.append(simpledata_try_append('dewey_decimal_class'))
 
     return simpledata_list
 
@@ -81,11 +110,11 @@ if __name__ == "__main__":
         # it wasn't originally clear if this code would
         # still exist after its first use.
         # this still may be true so I have not changed it yet.
-        bookdata = Book(bookdata_list[0], 
-                        bookdata_list[1], 
-                        bookdata_list[2], 
-                        bookdata_list[3], 
-                        bookdata_list[4], 
+        bookdata = Book(bookdata_list[0],
+                        bookdata_list[1],
+                        bookdata_list[2],
+                        bookdata_list[3],
+                        bookdata_list[4],
                         bookdata_list[5],
                         bookdata_list[6],
                         bookdata_list[7],
@@ -101,4 +130,3 @@ if __name__ == "__main__":
             db.session.rollback()
             # this is a crappy exception. i need to handly exactly the ON UNIQUE failure condition
             pass
-
