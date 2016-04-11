@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, TextField, validators
 
-from request_book import reorganize_openlibrary_data
+from request_book import reorganize_openlibrary_data, reorganize_manual_data
 
 import requests
 import json
@@ -66,7 +66,7 @@ PAGINATE_BY_HOWMANY = 15
 class Book(db.Model):
     """ Build a model based on the available fields in the openlibrary.org API.
 
-    Notes: 
+    Notes:
         authors - will be stored as a long string, openlibrary delivers it as a list of objects.
 
     Additional info:
@@ -88,10 +88,10 @@ class Book(db.Model):
     openlibrary_preview_url = db.Column(db.String(500), unique=False)
     dewey_decimal_class = db.Column(db.String(50), unique=False)
 
-    def __init__(self,  isbn, 
-                        title, 
-                        number_of_pages, 
-                        publish_date, 
+    def __init__(self,  isbn,
+                        title,
+                        number_of_pages,
+                        publish_date,
                         authors,
                         subjects,
                         openlibrary_medcover_url,
@@ -114,6 +114,22 @@ class Book(db.Model):
 
 class ISBNForm(Form):
     isbn = StringField('isbn', [validators.Length(min=10, max=13), validators.Regexp(r'^[0-9X]*$')])
+
+
+class ManualForm(Form):
+    """ WTForm class for manual submits.
+    The description parameter is used for user-friendly text.
+    """
+
+    isbn = StringField('isbn', [validators.Length(min=10, max=13), validators.Regexp(r'^[0-9X]*$')], description='ISBN*')
+    title = StringField('title', [validators.Length(min=1, max=200)], description='Title*')
+    authors = StringField('authors', [validators.Length(min=1, max=200)], description='Author(s)*')
+    publish_date = StringField('publish_date', [validators.Length(max=30)], description='Published')
+    number_of_pages = StringField('number_of_pages', [validators.Length(max=10)], description='Pages')
+    subjects = StringField('subjects', [validators.Length(max=5000)], description='Subjects')
+    cover_url = StringField('cover_url', [validators.Optional(), validators.Length(max=500), validators.URL(require_tld=True)], description='Cover Image URL')
+    preview_url = StringField('preview_url', [validators.Optional(), validators.Length(max=500), validators.URL(require_tld=True)], description='Preview URL')
+    dewey_decimal_class = StringField('dewey_decimal_class', [validators.Length(max=50)], description='Dewey Decimal Class')
 
 
 class ISBNSubmitForm(Form):
@@ -149,7 +165,7 @@ def submit(secret=None):
     secret_form = ISBNSubmitForm(request.form)
     if request.method == "GET":
         return redirect(url_for('new_isbn'))
-    if request.method == "POST" and secret_form.validate(): 
+    if request.method == "POST" and secret_form.validate():
         secret = secret_form.secret.data
 
     if secret != NEW_ISBN_SUBMIT_SECRET:
@@ -163,16 +179,8 @@ def submit(secret=None):
         # it wasn't originally clear if this code would
         # still exist after its first use.
         # this still may be true so I have not changed it yet.
-        # note: this should probably be abstracted for use by request_book.py and here. 
-        bookdata = Book(bookdata_list[0], 
-                        bookdata_list[1], 
-                        bookdata_list[2], 
-                        bookdata_list[3], 
-                        bookdata_list[4], 
-                        bookdata_list[5],
-                        bookdata_list[6],
-                        bookdata_list[7],
-                        bookdata_list[8])
+        # note: this should probably be abstracted for use by request_book.py and here.
+        bookdata = Book(*bookdata_list[0:9])
     else:
         return("no book!")
 
@@ -187,8 +195,6 @@ def submit(secret=None):
         return("book already exists. how did you get here?")
 
 
-
-
 @app.route("/new/", methods=('GET', 'POST'))
 def new_isbn(isbn=None):
     """ Allow a new ISBN to be added to the book database.
@@ -200,7 +206,6 @@ def new_isbn(isbn=None):
 
     if request.method == "POST" and isbn_form.validate():
         isbn = isbn_form.isbn.data
-        print type(isbn)
         isbn_exists = Book.query.filter_by(isbn=isbn).first()
 
         if isbn_exists:
@@ -223,18 +228,9 @@ def new_isbn(isbn=None):
                     # it wasn't originally clear if this code would
                     # still exist after its first use.
                     # this still may be true so I have not changed it yet.
-                    # note: this should probably be abstracted for use by request_book.py and here. 
+                    # note: this should probably be abstracted for use by request_book.py and here.
                     # KEY POINT: this is only done here too because we need to send it to the template.
-                    bookdata = Book(bookdata_list[0], 
-                                    bookdata_list[1], 
-                                    bookdata_list[2], 
-                                    bookdata_list[3], 
-                                    bookdata_list[4], 
-                                    bookdata_list[5],
-                                    bookdata_list[6],
-                                    bookdata_list[7],
-                                    bookdata_list[8])
-
+                    bookdata = Book(*bookdata_list[0:9])
                     return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn, book=bookdata, isbn_exists=False)
 
                     # this doesn't go here, this happens when the user verifies the book is right
@@ -249,10 +245,37 @@ def new_isbn(isbn=None):
     return render_template("new_isbn.html", isbn_form=isbn_form, secret_form=secret_form, isbn=isbn)
 
 
+@app.route("/new_manual/", methods=('GET', 'POST'))
+def new_manual():
+    """ Allow users to manually fill in book details and add them to the database.
+    """
+    manual_form = ManualForm(request.form)
+    secret_form = ISBNSubmitForm(request.form)
+
+    if request.method == 'GET':
+        pass
+
+    if request.method == "POST" and manual_form.validate():
+        isbn_exists = Book.query.filter_by(isbn=manual_form.isbn.data).first()
+
+        if isbn_exists:
+            return render_template("new_manual.html", manual_form=manual_form, secret_form=secret_form, book=isbn_exists, isbn_exists=True)
+
+        bookdata_list = reorganize_manual_data(manual_form)
+
+        session['bookdata'] = json.dumps(bookdata_list)
+
+        bookdata = Book(*bookdata_list[0:9])
+        return render_template("new_manual.html", manual_form=manual_form, secret_form=secret_form, book=bookdata)
+
+
+    return render_template("new_manual.html", manual_form=manual_form, secret_form=secret_form)
+
+
 @app.route("/all/")
 def all():
-    """ Show everything on one page.  
-    
+    """ Show everything on one page.
+
     This feature may eventually become a legacy feature.
     Useful if you wish to use a browser search tool rather than relying on the
     advanced search.
@@ -285,10 +308,10 @@ def explore():
 @app.route("/index/<int:page>/", methods=["GET","POST"])
 def index(page=1):
     """ Show an index of books, provide some basic searchability.
-    
+
     The two features coded here, pagination and search, will probably be superceded
-    by a different implementation. 
-    
+    by a different implementation.
+
     Options:
         javascript implementation with handlebars or moustache templating systems.
         any implementation that consumes this data from an rest/json API.
@@ -318,7 +341,6 @@ def index(page=1):
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
-    # app.run(host='0.0.0.0') # listens on all public IPs. 
+    # app.run(host='0.0.0.0') # listens on all public IPs.
 
     app.run()
-

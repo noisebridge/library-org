@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h3 class="explanation-header">Submit a new book manually</h3>
+
+{% if book %}
+  <div class="row">
+    <div class="col-xs-6 col-xs-offset-3 text-center">
+      {% if isbn_exists %}
+        <button type="button" class="btn btn-default" onclick="javascript:history.go(-1)">Go Back</button>
+        <h3 class="explanation-header">ISBN already exists!</h3>
+        <h3 class="explanation-header">The book is ready to go on the shelf (we don't track quantity).</h3>
+      {% else %}
+				{% from "_formhelpers.html" import render_field %}
+				<form class="new-isbn-form" method="POST" action="/submit/">
+					{{ secret_form.hidden_tag() }}
+
+					<fieldset class="form-group">
+						{{ render_field(secret_form.secret, class="form-control", placeholder="Please enter the secret passphrase here.") }}
+					</fieldset>
+
+					<button type="submit" class="btn btn-primary">Verify and Submit</button>
+				</form>
+      {% endif %}
+    </div>
+  </div>
+  {% include "sections/bookdetailpage.html" %}
+{% else %}
+<div class="row">
+  <div class="col-xs-4 col-xs-offset-4">
+    {% from "_formhelpers.html" import render_field %}
+    <form class="new-isbn-form" method="POST" action="/new_manual/">
+      <fieldset class="form-group">
+        {% for field in manual_form %}
+          {# Render every field of the form, including CSRF token. #}
+          {{ render_field(field, class="form-control") }}
+        {% endfor %}
+      </fieldset>
+
+      <button type="submit" class="btn btn-default">Check</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<div class="header-spacer"></div>
+
+{% endblock %}
