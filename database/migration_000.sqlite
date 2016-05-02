@@ -1,0 +1,8 @@
+.output stdout
+
+.open books.sqlite
+ALTER TABLE book ADD COLUMN lccn VARCHAR(20) DEFAULT "";
+ALTER TABLE book ADD COLUMN olid VARCHAR(20) DEFAULT "";
+
+.schema
+.exit
