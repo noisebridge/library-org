@@ -33,3 +33,4 @@ librarything seems to be a very good 'tooling' api: http://www.librarything.com/
 ### Issues:
 
 Database is currently unique on isbn, we care about being unique on open library id, maybe isbn.
+There is a place in control flow, the new book form that still relies on ISBN being unique. This should probably wholesale convert to LCCN and still allow people to enter by isbn for convenience. This adds some complexity as there are a great many isbns for one book.
