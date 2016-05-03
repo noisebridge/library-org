@@ -1,57 +1,93 @@
-""" Request methods for rendering requested ISBNs.
+""" method for rendering requested books
+
+Main module will build a dictionary from a json string, in this case from a file.
 """
+
+
 def reorganize_openlibrary_data(k, v):
     """ Prepare openlibrary data to become a book object.
     """
+
+    def serialize_multi_entry_fields(multi_entry_list, extraction_key="", separator="; "):
+        """ Take a list of similar dicts and serialize some contents to a string
+
+        This dict structure is specific to openlibrary.
+        The extraction key is specific to the list of dicts being encoded.
+        The separator is arbitrary and used for readibility and later parsing.
+        """
+        # intermediate list which will be joined to produce the encoded string
+        result_list = list()
+
+        for dict_item in multi_entry_list:
+            result_list.append(dict_item[extraction_key])
+
+        return separator.join(result_list)
+
+    bookdata_dict = dict()
     simpledata_list = list()
-    simpledata_list.append(k[5:])
+
+    try:
+        # use the submitter's isbn for simplicity
+        # this will need refactored to support books with no isbn
+        # probably by adding separate fields for isbn 10 and 13.
+        simpledata_list.append(k[5:])
+    except KeyError:
+        simpledata_list.append("")
+
+    try:
+        # just take the first one in the list
+        simpledata_list.append(v['identifiers']['openlibrary'][0])
+    except KeyError:
+        simpledata_list.append("")
+
+    try:
+        # just take the first one in the list
+        simpledata_list.append(v['identifiers']['lccn'][0])
+    except KeyError:
+        simpledata_list.append("")
+
     try:
         simpledata_list.append(v['title'])
     except KeyError:
         simpledata_list.append("")
+
     try:
         simpledata_list.append(v['number_of_pages'])
     except KeyError:
         simpledata_list.append("")
+
     try:
         simpledata_list.append(v['publish_date'])
     except KeyError:
         simpledata_list.append("")
-    author_string = ""
+
     try:
-        for author in v['authors']:
-            author_string += author['name']
-            author_string += "; "
-        simpledata_list.append(author_string.rstrip(" ;"))
+        simpledata_list.append(serialize_multi_entry_fields(v['authors'],'name'))
     except KeyError:
         simpledata_list.append("")
-    subject_string = ""
+
     try:
-        for subject in v["subjects"]:
-            subject_string += subject["name"]
-            subject_string += "; "
-        simpledata_list.append(subject_string.rstrip(" ;"))
-    except:
+        simpledata_list.append(serialize_multi_entry_fields(v['subjects'],'name'))
+    except KeyError:
         simpledata_list.append("")
+
     try:
         simpledata_list.append(v["cover"]["medium"])    
-    except:
+    except KeyError:
         simpledata_list.append("")
     try:
-        # just take the first preview...
         simpledata_list.append(v["ebooks"][0]["preview_url"])    
-    except:
+    except KeyError:
         simpledata_list.append("")
+
     try:
-        dewey_string = ""
-        for dewey_class in v["classifications"]["dewey_decimal_class"]:
-            dewey_string += dewey_class
-            dewey_string += "; "
-        simpledata_list.append(dewey_string.rstrip(" ;"))
-    except:
+        simpledata_list.append(serialize_multi_entry_fields(v['classifications']))
+    except KeyError:
         simpledata_list.append("")
 
     return simpledata_list
+
+
 
 
 if __name__ == "__main__":
@@ -89,7 +125,9 @@ if __name__ == "__main__":
                         bookdata_list[5],
                         bookdata_list[6],
                         bookdata_list[7],
-                        bookdata_list[8])
+                        bookdata_list[8],
+                        bookdata_list[9],
+                        bookdata_list[10])
 
         db.session.add(bookdata)
 

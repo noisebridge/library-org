@@ -47,7 +47,7 @@ app.secret_key = APP_SECRET_KEY
 
 # flask will reload itself on changes when debug is True
 # flask can execute arbitrary code if you set this True
-app.debug = False
+app.debug = True
 
 #sqlalchemy configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_db
@@ -178,7 +178,9 @@ def submit(secret=None):
                         bookdata_list[5],
                         bookdata_list[6],
                         bookdata_list[7],
-                        bookdata_list[8])
+                        bookdata_list[8],
+                        bookdata_list[9],
+                        bookdata_list[10])
     else:
         return("no book!")
 
@@ -239,7 +241,9 @@ def new_book(isbn=None):
                                     bookdata_list[5],
                                     bookdata_list[6],
                                     bookdata_list[7],
-                                    bookdata_list[8])
+                                    bookdata_list[8],
+                                    bookdata_list[9],
+                                    bookdata_list[10])
 
                     return render_template("new_book.html", book_form=book_form, secret_form=secret_form, isbn=isbn, book=bookdata, book_exists=False)
 

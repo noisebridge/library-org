@@ -29,3 +29,7 @@ Alpha released.
 Programmable Web lists 49 library APIs:
 http://www.programmableweb.com/category/library%2Breference/apis?category=20272%2C20066
 librarything seems to be a very good 'tooling' api: http://www.librarything.com/api
+
+### Issues:
+
+Database is currently unique on isbn, we care about being unique on open library id, maybe isbn.
