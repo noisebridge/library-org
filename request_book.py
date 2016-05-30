@@ -23,7 +23,10 @@ def reorganize_openlibrary_data(k, v):
 
         return separator.join(result_list)
 
+    # what is this dict for? possibly intended to make a dict instead of list.
+    # see note below where the list is added to session.
     bookdata_dict = dict()
+
     simpledata_list = list()
 
     try:
@@ -81,13 +84,11 @@ def reorganize_openlibrary_data(k, v):
         simpledata_list.append("")
 
     try:
-        simpledata_list.append(serialize_multi_entry_fields(v['classifications']))
+        simpledata_list.append(v['classifications']['dewey_decimal_class'][0])
     except KeyError:
         simpledata_list.append("")
 
     return simpledata_list
-
-
 
 
 if __name__ == "__main__":
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     # no idea why you would want this, but it can be used as a base for manual fixtures or something.
     db.create_all()
 
-    sourcejsonfile = "dataman/isbn_response_data.020316.2343.json"
+    sourcejsonfile = "dataman/UPDATE_DB_FOR_OLID/isbn_response_data_052916_1628.json"
 
     with open(sourcejsonfile) as f:
         source_data = json.load(f)
@@ -113,10 +114,7 @@ if __name__ == "__main__":
 
         bookdata_list = reorganize_openlibrary_data(k, v)
 
-        # this bookdata_list obviously needs to be a dict,
-        # it wasn't originally clear if this code would
-        # still exist after its first use.
-        # this still may be true so I have not changed it yet.
+        # convert this to a dict and pass to session that way
         bookdata = Book(bookdata_list[0], 
                         bookdata_list[1], 
                         bookdata_list[2], 
@@ -131,12 +129,10 @@ if __name__ == "__main__":
 
         db.session.add(bookdata)
 
+
         try:
             db.session.commit()
         except IntegrityError:
-        #except sqlalchemy.exc.IntegrityError:
             print("Book failed, already included: {}".format(bookdata_list[1], bookdata_list[0]))
             db.session.rollback()
-            # this is a crappy exception. i need to handly exactly the ON UNIQUE failure condition
-            pass
 

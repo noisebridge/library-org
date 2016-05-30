@@ -78,9 +78,9 @@ class Book(db.Model):
         use jscmd=details to get cover thumbnail... this could be a key piece of the template
     """
     id = db.Column(db.Integer, primary_key=True)
-    isbn = db.Column(db.String(20), unique=True)
-    olid = db.Column(db.String(20), unique=True)
-    lccn = db.Column(db.String(20), unique=True)
+    isbn = db.Column(db.String(20), unique=False)
+    olid = db.Column(db.String(20), unique=False)
+    lccn = db.Column(db.String(20), unique=False)
     title = db.Column(db.String(200), unique=False)
     authors = db.Column(db.String(200), unique=False)
     publish_date = db.Column(db.String(30), unique=False)
