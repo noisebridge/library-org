@@ -2,6 +2,8 @@
 *.cfg
 *.swp
 *.pyc
+*.sqlite
 
 tmp/*
 venv/*
+
