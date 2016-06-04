@@ -6,6 +6,8 @@ Main module will build a dictionary from a json string, in this case from a file
 
 def reorganize_openlibrary_data(k, v):
     """ Prepare openlibrary data to become a book object.
+
+    The k value isn't really used anymore but it is preserved for now.
     """
 
     def serialize_multi_entry_fields(multi_entry_list, extraction_key="", separator="; "):
@@ -29,13 +31,27 @@ def reorganize_openlibrary_data(k, v):
 
     simpledata_list = list()
 
+    # Try for each ISBN, prefer ISBN13.
+    ISBN_acquired = False
+    isbn_to_store = ""
     try:
-        # use the submitter's isbn for simplicity
-        # this will need refactored to support books with no isbn
-        # probably by adding separate fields for isbn 10 and 13.
-        simpledata_list.append(k[5:])
+        # try the isbn 13 then the 10
+        isbn_to_store = v['identifiers']['isbn_13'][0]
+        ISBN_acquired = True
     except KeyError:
-        simpledata_list.append("")
+        pass
+
+    # get the isbn10 if the isbn13 failed.
+    if not ISBN_acquired:
+        try:
+            # try the isbn 13 then the 10
+            isbn_to_store = v['identifiers']['isbn_10'][0]
+            ISBN_acquired = True
+        except KeyError:
+            pass
+
+    # append isbn or empty string.
+    simpledata_list.append(isbn_to_store)
 
     try:
         # just take the first one in the list

@@ -20,15 +20,11 @@
       {{ book_form.hidden_tag() }}
 
       <fieldset class="form-group">
-        {{ render_field(book_form.isbn, class="form-control", placeholder="[0-9] and X only. no hyphens. 10 or 13 characters.") }}
+        {{ render_field(book_form.olid, class="form-control", placeholder="Add the book's OLID (Open Library ID, e.g. OL_______M") }}
       </fieldset>
 
       <button type="submit" class="btn btn-default">Check</button>
     </form>
-
-    {% if book %}
-      <h3 class="explanation-header">{{ book }}</h3>
-    {% endif %}
 
   </div>
 </div>
@@ -54,7 +50,7 @@
     </div>
   </div>
   {% include "sections/bookdetailpage.html" %}
-{% elif book %}
+{% else %}
 <div class="row">
   <div class="col-xs-6 col-xs-offset-3 text-center">
     <h3 class="explanation-header">The book was not found!</h3>

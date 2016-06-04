@@ -119,11 +119,11 @@ class Book(db.Model):
 
 
 class BookForm(Form):
-    isbn = StringField('isbn', [validators.Length(min=10, max=13), validators.Regexp(r'^[0-9X]*$')])
+    olid = StringField('olid', [validators.Length(min=4, max=20)])
 
 
 class BookSubmitForm(Form):
-    secret = StringField('isbn', [validators.Length(min=1, max=200)])
+    secret = StringField('olid', [validators.Length(min=1, max=200)])
 
 
 class SampleForm(Form):
@@ -195,10 +195,8 @@ def submit(secret=None):
         return("book already exists. how did you get here?")
 
 
-
-
 @app.route("/new/", methods=('GET', 'POST'))
-def new_book(isbn=None):
+def new_book(olid=None):
     """ Allow a new book to be added to the database.
     """
     book_form = BookForm(request.form)
@@ -207,23 +205,22 @@ def new_book(isbn=None):
         pass
 
     if request.method == "POST" and book_form.validate():
-        isbn = book_form.isbn.data
-        print type(isbn)
-        book_exists = Book.query.filter_by(isbn=isbn).first()
+        olid = book_form.olid.data
+        book_exists = Book.query.filter_by(olid=olid).first()
 
         if book_exists:
-            return render_template("new_book.html", book_form=book_form, secret_form=secret_form, isbn=isbn, book=book_exists, book_exists=True)
+            return render_template("new_book.html", book_form=book_form, secret_form=secret_form, olid=olid, book=book_exists, book_exists=True)
         else:
             # make a book object, render it, and if the user submits, then ingest it.
             # SO -  we need to get the ingestion script repackaged so a single run of the ingester
             #       can be imported as a function.
-            URL = "https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&jscmd=data&format=json"
-            r = requests.get(URL.format(isbn=isbn))
+            URL = "https://openlibrary.org/api/books?bibkeys=OLID:{olid}&jscmd=data&format=json"
+            r = requests.get(URL.format(olid=olid))
 
             if(r.status_code == 200):
 
                 if r.json():
-                    bookdata_list = reorganize_openlibrary_data("ISBN:"+isbn, r.json()["ISBN:"+isbn])
+                    bookdata_list = reorganize_openlibrary_data("OLID:"+olid, r.json()["OLID:"+olid])
 
                     session['bookdata'] = json.dumps(bookdata_list)
 
@@ -245,7 +242,7 @@ def new_book(isbn=None):
                                     bookdata_list[9],
                                     bookdata_list[10])
 
-                    return render_template("new_book.html", book_form=book_form, secret_form=secret_form, isbn=isbn, book=bookdata, book_exists=False)
+                    return render_template("new_book.html", book_form=book_form, secret_form=secret_form, olid=olid, book=bookdata, book_exists=False)
 
                     # this doesn't go here, this happens when the user verifies the book is right
                     #db.session.add(bookdata)
@@ -256,7 +253,7 @@ def new_book(isbn=None):
                 pass
                 # this is rendered as logic in the view lol
 
-    return render_template("new_book.html", book_form=book_form, secret_form=secret_form, isbn=isbn)
+    return render_template("new_book.html", book_form=book_form, secret_form=secret_form, olid=olid)
 
 
 @app.route("/all/")
