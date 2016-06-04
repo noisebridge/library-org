@@ -27,7 +27,7 @@
         <br>
         <p class="text-underline"><u>External Resources:</u>
         <p><span class="detail-view-content"></span><a href="http://www.amazon.com/gp/search?index=books&field-isbn={{ book.isbn }}" target="_blank">Amazon Search</a>
-        <p><span class="detail-view-content"></span><a href="https://openlibrary.org/search?q={{ book.olid }}">OpenLibrary Search</a></p>
+        <p><span class="detail-view-content"></span><a href="https://openlibrary.org/search?q={{ book.olid }}" target="_blank">OpenLibrary Search</a></p>
         {% if book.openlibrary_preview_url %}
         <p><span class="detail-view-content"></span><a href="{{ book.openlibrary_preview_url }}" target="_blank">OpenLibrary Preview</a>
         {% else %}
