@@ -21,6 +21,8 @@
 
       <fieldset class="form-group">
         {{ render_field(new_location_form.new_location, class="form-control", placeholder="Type the new Location Label Name (5-10 characters).") }}
+        <br>
+        {{ render_field(new_location_form.location_entry_secret, class="form-control", placeholder="Type the location creation secret.") }}
       </fieldset>
 
       <button type="submit" class="btn btn-default">Add</button>

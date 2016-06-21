@@ -104,6 +104,9 @@ def reorganize_openlibrary_data(k, v):
     except KeyError:
         simpledata_list.append("")
 
+    # location
+    simpledata_list.append("")
+
     return simpledata_list
 
 
@@ -131,6 +134,7 @@ if __name__ == "__main__":
         bookdata_list = reorganize_openlibrary_data(k, v)
 
         # convert this to a dict and pass to session that way
+        """
         bookdata = Book(bookdata_list[0], 
                         bookdata_list[1], 
                         bookdata_list[2], 
@@ -142,6 +146,9 @@ if __name__ == "__main__":
                         bookdata_list[8],
                         bookdata_list[9],
                         bookdata_list[10])
+        """
+        # just use unpack for now
+        bookdata = Book(*bookdata_list)
 
         db.session.add(bookdata)
 

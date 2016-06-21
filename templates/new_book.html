@@ -31,21 +31,22 @@
 
 {% if book %}
   <div class="row">
+    <br>
     <div class="col-xs-6 col-xs-offset-3 text-center">
       {% if book_exists %}
         <h3 class="explanation-header">Book already exists!</h3>
         <h3 class="explanation-header">The book is ready to go on the shelf (we don't track quantity).</h3>
       {% else %}
-				{% from "_formhelpers.html" import render_field %}
-				<form class="new-book-form" method="POST" action="/submit/">
-					{{ secret_form.hidden_tag() }}
+        {% from "_formhelpers.html" import render_field %}
+        <form class="new-book-form" method="POST" action="/submit/">
+          {{ secret_form.hidden_tag() }}
 
-					<fieldset class="form-group">
-						{{ render_field(secret_form.secret, class="form-control", placeholder="Please enter the secret passphrase here.") }}
-					</fieldset>
+          <fieldset class="form-group">
+            {{ render_field(secret_form.secret, class="form-control", placeholder="Please enter the secret passphrase here.") }}
+          </fieldset>
 
-					<button type="submit" class="btn btn-primary">Verify and Submit</button>
-				</form>
+          <button type="submit" class="btn btn-primary">Verify and Submit</button>
+        </form>
       {% endif %}
     </div>
   </div>

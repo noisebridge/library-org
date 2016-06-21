@@ -30,6 +30,7 @@ CONFIG.read(CONFIG_PATH)
 APP_SECRET_KEY = CONFIG.get("secrets", "APP_SECRET_KEY")
 WTF_CSRF_SECRET_KEY = CONFIG.get("secrets", "WTF_CSRF_SECRET_KEY")
 NEW_ISBN_SUBMIT_SECRET = CONFIG.get("secrets", "NEW_ISBN_SUBMIT_SECRET")
+NEW_LOCATION_SUBMIT_SECRET = CONFIG.get("secrets", "NEW_LOCATION_SUBMIT_SECRET")
 RECAPTCHA_PUBLIC_KEY = CONFIG.get("secrets", "RECAPTCHA_PUBLIC_KEY")
 RECAPTCHA_PRIVATE_KEY = CONFIG.get("secrets", "RECAPTCHA_PRIVATE_KEY")
 
@@ -161,7 +162,7 @@ class LocationForm(Form):
 class NewLocationForm(Form):
     # These constraints are temporary and can change to support the labelling system.
     new_location = StringField('label_name', [validators.Length(min=5, max=10)])
-
+    location_entry_secret = StringField('location_entry_secret', validators=[validators.Length(min=1, max=200)])
 
 @app.route("/sampleform/", methods=('GET', 'POST'))
 def sampleform():
@@ -204,17 +205,7 @@ def submit(secret=None):
         # still exist after its first use.
         # this still may be true so I have not changed it yet.
         # note: this should probably be abstracted for use by request_book.py and here. 
-        bookdata = Book(bookdata_list[0], 
-                        bookdata_list[1], 
-                        bookdata_list[2], 
-                        bookdata_list[3], 
-                        bookdata_list[4], 
-                        bookdata_list[5],
-                        bookdata_list[6],
-                        bookdata_list[7],
-                        bookdata_list[8],
-                        bookdata_list[9],
-                        bookdata_list[10])
+        bookdata = Book(*bookdata_list)
     else:
         return("no book!")
 
@@ -258,23 +249,10 @@ def new_book(olid=None):
 
                     session['bookdata'] = json.dumps(bookdata_list)
 
-                    # this bookdata_list obviously needs to be a dict,
-                    # it wasn't originally clear if this code would
-                    # still exist after its first use.
-                    # this still may be true so I have not changed it yet.
+                    # this bookdata_list needs to be a dict,
                     # note: this should probably be abstracted for use by request_book.py and here. 
                     # KEY POINT: this is only done here too because we need to send it to the template.
-                    bookdata = Book(bookdata_list[0], 
-                                    bookdata_list[1], 
-                                    bookdata_list[2], 
-                                    bookdata_list[3], 
-                                    bookdata_list[4], 
-                                    bookdata_list[5],
-                                    bookdata_list[6],
-                                    bookdata_list[7],
-                                    bookdata_list[8],
-                                    bookdata_list[9],
-                                    bookdata_list[10])
+                    bookdata = Book(*bookdata_list)
 
                     return render_template("new_book.html", book_form=book_form, secret_form=secret_form, olid=olid, book=bookdata, book_exists=False)
 
@@ -304,7 +282,7 @@ def all():
 
 
 @app.route("/new_location/", methods=["GET","POST"])
-def new_location(new_location=None):
+def new_location(new_location=None, new_location_submit_secret=None):
     """ Register a new location
     """
 
@@ -314,19 +292,24 @@ def new_location(new_location=None):
         pass
 
     if request.method == "POST" and new_location_form.validate():
+
+        if new_location_form.location_entry_secret.data != NEW_LOCATION_SUBMIT_SECRET:
+            return("Bad Secret, try again. This page will be more friendly later :-)")
+
+
         new_location = new_location_form.new_location.data
         location_exists = Location.query.filter_by(label_name=new_location).first()
 
         if location_exists:
-            # this route will not add the location, as it exists.
-            return render_template("new_location.html", new_location_form=new_location_form, new_location=new_location, location_exists=True)
+            return("This location already exists! Try again. Friendly response later.")
         else:
             # label_name, full_name
             newlocationdata = Location(new_location, "")
             db.session.add(newlocationdata)
             db.session.commit()
+            return("Congratulations, {} has been added to your locations. Make this response nice.".format(new_location))
 
-    return render_template("new_location.html", new_location_form=new_location_form, new_location=new_location)
+    return render_template("new_location.html", new_location_form=new_location_form, new_location=new_location, new_location_submit_secret=new_location_submit_secret)
 
 
 @app.route("/detail/<int:id>/", methods=["GET","POST"])
@@ -347,8 +330,11 @@ def detail(id=1):
         book.location = location_form.location.data
         db.session.commit()
 
-    location_form.location.choices = location_choices
-    location_form.location.default = book.location
+    location_form.location.choices = location_choices + [(-1, u"-- Add the correct location --")]
+    if book.location:
+        location_form.location.default = book.location
+    else:
+        location_form.location.default = -1   # give a prompt in the SelectField
     location_form.process()
 
     return render_template( 'detail.html', 
