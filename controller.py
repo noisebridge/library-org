@@ -7,7 +7,7 @@ from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 
 from flask_wtf import Form, RecaptchaField
-from wtforms import StringField, TextField, validators
+from wtforms import StringField, TextField, SelectField, validators
 
 from request_book import reorganize_openlibrary_data
 
@@ -62,6 +62,23 @@ PAGINATE_BY_HOWMANY = 15
 #app.config['RECAPTCHA_USE_SSL'] = False
 
 
+class Location(db.Model):
+    """ Locations have a shortname and a pkey ID. 
+
+    Books are linked to location by ForeignKey using the ID (pkey).
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    label_name = db.Column(db.String(20), unique=True)
+    full_name = db.Column(db.String(100), unique=False)
+    books = db.relationship('Book', backref='person', lazy='dynamic')
+
+    def __init__(self, label_name, full_name):
+        self.label_name = label_name
+        self.full_name = full_name
+
+    def __repr__(self):
+        return '<Location Label: >'.format(self.label_name)
+
 
 class Book(db.Model):
     """ Build a model based on the available fields in the openlibrary.org API.
@@ -89,6 +106,7 @@ class Book(db.Model):
     openlibrary_medcover_url = db.Column(db.String(500), unique=False)
     openlibrary_preview_url = db.Column(db.String(500), unique=False)
     dewey_decimal_class = db.Column(db.String(50), unique=False)
+    location = db.Column(db.Integer, db.ForeignKey('location.id'), default=None, nullable=True)
 
     def __init__(self,  isbn, 
                         olid,
@@ -100,7 +118,8 @@ class Book(db.Model):
                         subjects,
                         openlibrary_medcover_url,
                         openlibrary_preview_url,
-                        dewey_decimal_class):
+                        dewey_decimal_class,
+                        location):
 
         self.isbn = isbn
         self.olid = olid
@@ -113,6 +132,7 @@ class Book(db.Model):
         self.openlibrary_medcover_url = openlibrary_medcover_url
         self.openlibrary_preview_url = openlibrary_preview_url
         self.dewey_decimal_class = dewey_decimal_class
+        self.location = location
 
     def __repr__(self):
         return '<Title: >'.format(self.title)
@@ -122,12 +142,26 @@ class BookForm(Form):
     olid = StringField('olid', [validators.Length(min=4, max=20)])
 
 
-class BookSubmitForm(Form):
+class SecretSubmitForm(Form):
+    """ Used on any form where a passphrase is required to submit books.
+    """
     secret = StringField('olid', [validators.Length(min=1, max=200)])
 
 
 class SampleForm(Form):
     name = StringField('name', validators=[validators.DataRequired()])
+
+
+class LocationForm(Form):
+    # attach form.location.choices = location_options after instantiation!!
+    # http://wtforms.readthedocs.io/en/latest/fields.html#wtforms.fields.SelectField
+    location = SelectField(coerce=int)
+
+
+class NewLocationForm(Form):
+    # These constraints are temporary and can change to support the labelling system.
+    new_location = StringField('label_name', [validators.Length(min=5, max=10)])
+
 
 @app.route("/sampleform/", methods=('GET', 'POST'))
 def sampleform():
@@ -152,7 +186,7 @@ def home():
 
 @app.route("/submit/", methods=("GET","POST"))
 def submit(secret=None):
-    secret_form = BookSubmitForm(request.form)
+    secret_form = SecretSubmitForm(request.form)
     if request.method == "GET":
         return redirect(url_for('new_book'))
     if request.method == "POST" and secret_form.validate(): 
@@ -200,7 +234,7 @@ def new_book(olid=None):
     """ Allow a new book to be added to the database.
     """
     book_form = BookForm(request.form)
-    secret_form = BookSubmitForm(request.form)
+    secret_form = SecretSubmitForm(request.form)
     if request.method == "GET":
         pass
 
@@ -269,7 +303,33 @@ def all():
     return render_template('all.html', books=books)
 
 
-@app.route("/detail/<int:id>/")
+@app.route("/new_location/", methods=["GET","POST"])
+def new_location(new_location=None):
+    """ Register a new location
+    """
+
+    new_location_form = NewLocationForm(request.form)
+
+    if request.method == "GET":
+        pass
+
+    if request.method == "POST" and new_location_form.validate():
+        new_location = new_location_form.new_location.data
+        location_exists = Location.query.filter_by(label_name=new_location).first()
+
+        if location_exists:
+            # this route will not add the location, as it exists.
+            return render_template("new_location.html", new_location_form=new_location_form, new_location=new_location, location_exists=True)
+        else:
+            # label_name, full_name
+            newlocationdata = Location(new_location, "")
+            db.session.add(newlocationdata)
+            db.session.commit()
+
+    return render_template("new_location.html", new_location_form=new_location_form, new_location=new_location)
+
+
+@app.route("/detail/<int:id>/", methods=["GET","POST"])
 def detail(id=1):
     """ Show an individual work
     """
@@ -278,7 +338,24 @@ def detail(id=1):
     session.clear()
 
     book = Book.query.get(id)
-    return render_template('detail.html', book=book, newbookflash=newbookflash)
+
+    # dynamically populate locations into SelectField
+    location_choices = [(l.id, l.label_name) for l in Location.query.order_by('label_name')]
+    location_form = LocationForm()
+
+    if request.method == "POST":
+        book.location = location_form.location.data
+        db.session.commit()
+
+    location_form.location.choices = location_choices
+    location_form.location.default = book.location
+    location_form.process()
+
+    return render_template( 'detail.html', 
+                            book=book, 
+                            newbookflash=newbookflash, 
+                            location_form = location_form
+                            )
 
 
 @app.route("/explore/")

@@ -41,6 +41,23 @@
         <p><span class="detail-view-content">ISBN: </span>{{ book.isbn }}</p>
         <p><span class="detail-view-content">OLID: </span>{{ book.olid }}</p>
 
+        <br>
+        <br>
+        <p class="text-underline"><u>Location:</u>
+
+        {% from "_formhelpers.html" import render_field %}
+        <form class="new-book-form" method="POST" action="{{ url_for('detail', id=book.id) }}">
+          {{ location_form.hidden_tag() }}
+
+          <fieldset class="form-group">
+            {{ render_field(location_form.location, class="form-control") }}
+          </fieldset>
+
+          <button type="submit" class="btn btn-default">Change</button>
+        </form>
+
+
+
       </div>
     </div>
 

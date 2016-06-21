@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block inlinecss %}
+<style type="text/css">
+.no-openlibrary-preview {
+  font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+<h3 class="explanation-header">Add a new Location Label</h3>
+
+<div class="row">
+  <div class="col-xs-4 col-xs-offset-4">
+
+    {% from "_formhelpers.html" import render_field %}
+    <form class="new-book-form" method="POST" action="/new_location/">
+      {{ new_location_form.hidden_tag() }}
+
+      <fieldset class="form-group">
+        {{ render_field(new_location_form.new_location, class="form-control", placeholder="Type the new Location Label Name (5-10 characters).") }}
+      </fieldset>
+
+      <button type="submit" class="btn btn-default">Add</button>
+    </form>
+
+  </div>
+</div>
+
+<div class="header-spacer"></div>
+
+{% endblock %}
