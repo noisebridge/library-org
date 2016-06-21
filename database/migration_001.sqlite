@@ -1,0 +1,39 @@
+.output stdout
+
+.open books.sqlite
+
+CREATE TABLE location (
+        id INTEGER NOT NULL, 
+        label_name VARCHAR(20), 
+        full_name VARCHAR(100), 
+        PRIMARY KEY (id), 
+        UNIQUE (label_name)
+);
+
+ALTER TABLE book ADD COLUMN location INTEGER;
+ALTER TABLE book RENAME to _book;
+
+CREATE TABLE book (
+        id INTEGER NOT NULL, 
+        isbn VARCHAR(20), 
+        olid VARCHAR(20), 
+        lccn VARCHAR(20), 
+        title VARCHAR(200), 
+        authors VARCHAR(200), 
+        publish_date VARCHAR(30), 
+        number_of_pages VARCHAR(10), 
+        subjects VARCHAR(5000), 
+        openlibrary_medcover_url VARCHAR(500), 
+        openlibrary_preview_url VARCHAR(500), 
+        dewey_decimal_class VARCHAR(50), 
+        location INTEGER, 
+        PRIMARY KEY (id), 
+        FOREIGN KEY(location) REFERENCES location (id)
+);
+
+INSERT INTO book select * from _book;
+
+drop table _book;
+
+.schema
+.exit
