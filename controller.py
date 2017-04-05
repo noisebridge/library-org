@@ -64,7 +64,7 @@ PAGINATE_BY_HOWMANY = 15
 
 
 class Location(db.Model):
-    """ Locations have a shortname and a pkey ID. 
+    """ Locations have a shortname and a pkey ID.
 
     Books are linked to location by ForeignKey using the ID (pkey).
     """
@@ -84,7 +84,7 @@ class Location(db.Model):
 class Book(db.Model):
     """ Build a model based on the available fields in the openlibrary.org API.
 
-    Notes: 
+    Notes:
         authors - will be stored as a long string, openlibrary delivers it as a list of objects.
 
     Additional info:
@@ -109,12 +109,12 @@ class Book(db.Model):
     dewey_decimal_class = db.Column(db.String(50), unique=False)
     location = db.Column(db.Integer, db.ForeignKey('location.id'), default=None, nullable=True)
 
-    def __init__(self,  isbn, 
+    def __init__(self,  isbn,
                         olid,
                         lccn,
-                        title, 
-                        number_of_pages, 
-                        publish_date, 
+                        title,
+                        number_of_pages,
+                        publish_date,
                         authors,
                         subjects,
                         openlibrary_medcover_url,
@@ -190,7 +190,7 @@ def submit(secret=None):
     secret_form = SecretSubmitForm(request.form)
     if request.method == "GET":
         return redirect(url_for('new_book'))
-    if request.method == "POST" and secret_form.validate(): 
+    if request.method == "POST" and secret_form.validate():
         secret = secret_form.secret.data
 
     if secret != NEW_ISBN_SUBMIT_SECRET:
@@ -204,7 +204,7 @@ def submit(secret=None):
         # it wasn't originally clear if this code would
         # still exist after its first use.
         # this still may be true so I have not changed it yet.
-        # note: this should probably be abstracted for use by request_book.py and here. 
+        # note: this should probably be abstracted for use by request_book.py and here.
         bookdata = Book(*bookdata_list)
     else:
         return("no book!")
@@ -250,7 +250,7 @@ def new_book(olid=None):
                     session['bookdata'] = json.dumps(bookdata_list)
 
                     # this bookdata_list needs to be a dict,
-                    # note: this should probably be abstracted for use by request_book.py and here. 
+                    # note: this should probably be abstracted for use by request_book.py and here.
                     # KEY POINT: this is only done here too because we need to send it to the template.
                     bookdata = Book(*bookdata_list)
 
@@ -270,8 +270,8 @@ def new_book(olid=None):
 
 @app.route("/all/")
 def all():
-    """ Show everything on one page.  
-    
+    """ Show everything on one page.
+
     This feature may eventually become a legacy feature.
     Useful if you wish to use a browser search tool rather than relying on the
     advanced search.
@@ -337,9 +337,9 @@ def detail(id=1):
         location_form.location.default = -1   # give a prompt in the SelectField
     location_form.process()
 
-    return render_template( 'detail.html', 
-                            book=book, 
-                            newbookflash=newbookflash, 
+    return render_template( 'detail.html',
+                            book=book,
+                            newbookflash=newbookflash,
                             location_form = location_form
                             )
 
@@ -355,10 +355,10 @@ def explore():
 @app.route("/index/<int:page>/", methods=["GET","POST"])
 def index(page=1):
     """ Show an index of books, provide some basic searchability.
-    
+
     The two features coded here, pagination and search, will probably be superceded
-    by a different implementation. 
-    
+    by a different implementation.
+
     Options:
         javascript implementation with handlebars or moustache templating systems.
         any implementation that consumes this data from an rest/json API.
@@ -386,9 +386,41 @@ def index(page=1):
 
     return render_template('index.html', books=books, s=s)
 
+@app.route('/subjects/')
+def subjects():
+    subdict = {}
+    countsubs = []
+    subjects = db.session.query(Book).all() #.paginate(page,PAGINATE_BY_HOWMANY,False)
+    for i in subjects:
+        substring =  i.__dict__['subjects']
+        splitSubs = substring.split(';')
+        for o in splitSubs:
+            if o in subdict:
+                subdict[o] += 1
+            else:
+                subdict[o] = 1
+    sortedsubjects = sorted(subdict.iteritems(), key=lambda (k, v): (v,k), reverse=True)
+
+    return render_template('subjects.html', subjects=sortedsubjects)
+
+
+# make an endpoint for each subject
+@app.route('/subject/<string:subj>/<int:page>/')
+def subject(subj, page=1):
+    onpage=page
+    onsubject = subj
+    subject_indexes = []
+    subjects = db.session.query(Book.id, Book.subjects).all()
+    for index, subjectstringlist in subjects:
+        subjectlist =  subjectstringlist.split(';')
+        # should probably trim the spaces off each subject
+        for subject in subjectlist:
+            if subject == onsubject:
+                subject_indexes.append(index)
+    booklist = Book.query.order_by(Book.title.asc()).filter( or_( * [Book.id == d for d in subject_indexes] ) ).paginate(page,PAGINATE_BY_HOWMANY,False)
+    return render_template('onesubject.html', subject=onsubject, books=booklist, page=onpage)
+
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
-    # app.run(host='0.0.0.0') # listens on all public IPs. 
-
+    # app.run(host='0.0.0.0') # listens on all public IPs.
     app.run()
-

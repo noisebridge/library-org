@@ -20,12 +20,13 @@
       {{ book_form.hidden_tag() }}
 
       <fieldset class="form-group">
-        {{ render_field(book_form.olid, class="form-control", placeholder="Add the book's OLID (Open Library ID, e.g. OL_______M") }}
+        {{ render_field(book_form.olid, class="form-control", placeholder="Add the book's OLID (Open Library ID, e.g. OL_______M", required="required") }}
       </fieldset>
+
 
       <button type="submit" class="btn btn-default">Check</button>
     </form>
-
+      <a href="https://openlibrary.org/" target="_blank">Search on OpenLibrary.org</a>
   </div>
 </div>
 
@@ -42,10 +43,10 @@
           {{ secret_form.hidden_tag() }}
 
           <fieldset class="form-group">
-            {{ render_field(secret_form.secret, class="form-control", placeholder="Please enter the secret passphrase here.") }}
+            {{ render_field(secret_form.secret, class="form-control", type="text", placeholder="Please enter the secret passphrase here.", required="required") }}
           </fieldset>
 
-          <button type="submit" class="btn btn-primary">Verify and Submit</button>
+          <button type="submit" class="btn btn-primary" validationMessage="please input secret code">Verify and Submit</button>
         </form>
       {% endif %}
     </div>
@@ -56,11 +57,38 @@
   <div class="col-xs-6 col-xs-offset-3 text-center">
     <h3 class="explanation-header">The book was not found!</h3>
     <h3 class="explanation-header">We need to do more work before putting this book on the shelf.</h3>
-    <h3 class="explanation-header">For now, set the book in an assigned location.</h3>
+    <h3 class="explanation-header">For now, set the book in an assigned location (not on the bookshelf).</h3>
   </div>
 </div>
 {% endif %}
 
 <div class="header-spacer"></div>
 
+{% endblock %}
+
+{% block inlinejs %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    // enter any js when the page is running here
+
+
+    var b = ['hal', 'kddk']
+
+     try{
+       b = $('#secret')
+
+               b[0].oninvalid = function(e) {
+                   if (!e.target.validity.valid) {
+                       var errmsg = "Find and enter secret code located on the " +
+                                     "pillar in the middle of the 4 chromebooks"
+                       e.target.setCustomValidity(errmsg);
+                   }
+               };
+     }
+     catch(e){
+      // console.log('error with secret selection', e)
+     }
+
+  });
+</script>
 {% endblock %}

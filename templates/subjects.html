@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block inlinecss %}
+<style type="text/css">
+.no-openlibrary-preview {
+  font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1">
+      <div class="row">
+        <table>
+          <tr>
+            <th>Subject</th>
+            <th>Count</th>
+          </tr>
+          {% for sub in subjects %}
+          <tr>
+            <td><a href="{{ url_for('subject', subj=sub[0], page=1 )  }}">{{sub[0]}} </a></td><td> {{sub[1]}} </td>
+          {% endfor %}
+          <tr>
+        </table>
+      </div>
+
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block inlinejs %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    // add any javascript to be run on this page here
+    var subjects = {{subjects| tojson }}
+    console.log(subjects)
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block inlinecss %}
+<style type="text/css">
+.no-openlibrary-preview {
+  font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+<div class="col-xs-10 col-xs-offset-1">
+
+<div class="row>">
+  {{books.total}} books with subject {{subject}}.
+</div>
+  {% if books.pages > 1 %}
+        <div class="col-xs-10 col-xs-offset-1 pageNav">
+          <span class="pull-left">
+          {% if books.has_prev %}
+            <a href="{{ url_for(request.endpoint, page=books.prev_num, subj=subject) }}">Previous Page</a>
+          {% else %}
+            <span>Previous Page</span>
+          {% endif %}
+          </span>
+        <div class="col-xs-10 col-xs-offset-1 pages-list">
+          Showing page: <span class="pageof">          <select id="pageSelecter">
+                    {% for page in range(1,books.pages+1) %}
+                      {% if page == books.page %}
+                        <option class="paginate-opt" value="" selected>
+                          {{page}}
+                        </option>
+                      {% else %}
+                      <option class="paginate-opt" value="{{ url_for(request.endpoint, page=page, subj=subject) }}">
+                          {{page}}
+                      </option>
+                      {% endif %}
+                    {% endfor %}
+                  </select> of {{books.pages}}</span>
+
+        </div>
+
+        <span class="pull-right">
+        {% if books.has_next %}
+          <a href="{{ url_for(request.endpoint, page=books.next_num, subj=subject) }}">Next Page</a>
+        {% else %}
+          <span>Next Page</span>
+        {% endif %}
+        </span>
+      </div>
+  {% endif %}
+
+
+<div class="row">
+  <span class="book-section-headers col-xs-5">Title</span>
+  <span class="book-section-headers col-xs-3">Author</span>
+  <span class="book-section-headers text-right col-xs-4">Subjects <span class="toggle-subjects">(toggle)</span></span>
+</div>
+
+{% for book in books.items %}
+<div class="row book-section-entry-container">
+  <div class="col-xs-5"><a href="{{ url_for('detail', id=book.id) }}">{{ book.title }}</a></div>
+  <div class="col-xs-3"><p>{{ book.authors }}</div>
+  <div class="subject-field-expander col-xs-4 text-right" data-toggle="tooltip" data-placement="left" data-delay='{"show":0, "hide": 1000}' title="{{ book.subjects.split(';') }}">
+    <p>
+      {% for subject in book.subjects.split(';') %}
+        <a href="{{url_for(request.endpoint, subj=subject, page=1)}}">{{subject}}, </a>
+      {% endfor %}
+
+    </p>
+  </div>
+
+</div>
+{% endfor %}
+
+</div>
+{% endblock %}
+
+
+
+{% block inlinejs %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    // add any javascript to be run on this page here
+      $(".toggle-subjects").click(function() {
+        $(".subject-field-expander").toggle();
+      });
+
+      var pageSelect = $('#pageSelecter')
+      if(pageSelect){
+        console.log(pageSelect)
+        pageSelect.value = 2
+        pageSelect.on('change', function(d){
+          //console.log(d)
+          var nextPage = this.value;
+          console.log(nextPage)
+          window.location = nextPage;
+
+        })
+      }
+  });
+</script>
+{% endblock %}
