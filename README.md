@@ -13,8 +13,9 @@ Alpha released.
 2. [create] (https://virtualenvwrapper.readthedocs.org) and activate a [virtualenv] (https://virtualenv.pypa.io)
 3. pip install -r requirements.txt
 4. cd [static] (static/README.md) && npm install && gulp
-5. python controller.py
-6. go to [localhost:5000] (http://localhost:5000) in the browser
+5. cp database/books-sample.sqlite database/books.sqlite
+6. python controller.py
+7. go to [localhost:5000] (http://localhost:5000) in the browser
 
 
 ##### Features on-deck:
