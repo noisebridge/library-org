@@ -2,7 +2,7 @@
 *.cfg
 *.swp
 *.pyc
-*.sqlite
+database/books.sqlite
 
 tmp/*
 venv/*
