@@ -21,31 +21,34 @@ gulp.task('bower', function() {
 });
 
 // Lint Task
-gulp.task('lint', function() {
+function lint() {
     return gulp.src('src/js/**/*.js')
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
-});
+}
+exports.lint = lint;
 
 // Compile Our Sass
-gulp.task('sass', function() {
+function saas() {
     return gulp.src('src/scss/**/*.scss')
         .pipe(sass())
         .pipe(gulp.dest('dist'));
-});
+}
+exports.saas = saas;
 
 // Concatenate & Minify JS
-gulp.task('scripts', function() {
+function scripts() {
     return gulp.src('src/js/**/*.js')
         .pipe(concat('all.js'))
         .pipe(gulp.dest('dist'))
         .pipe(rename('all.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist'));
-});
+}
+exports.scripts = scripts;
 
 // Process Images w/ imagemin
-gulp.task('images', function () {
+function images() {
     return gulp.src('src/images/**/*')
         .pipe(imagemin({
             progressive: true,
@@ -53,15 +56,18 @@ gulp.task('images', function () {
             use: [pngquant()]
         }))
         .pipe(gulp.dest('dist/images'));
-});
+}
+exports.images = images;
 
 // Watch Files For Changes
-gulp.task('watch', function() {
+function watch() {
     gulp.watch('src/js/**/*.js', ['lint', 'scripts']);
     gulp.watch('src/scss/**/*.scss', ['sass']);
     gulp.watch('src/images/**/*', ['images']);
-});
+}
+exports.watch = watch;
 
 // Default Task
 // TAR 082615 - Added images, removed watch from default.
-gulp.task('default', ['lint', 'sass', 'scripts', 'images']);
+const build = gulp.series(lint, saas, scripts, images);
+exports.default = build;
