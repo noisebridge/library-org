@@ -10,5 +10,5 @@ argparse==1.4.0
 itsdangerous==1.1.0
 requests==2.22.0
 uWSGI==2.0.18
-wheel==0.33.4
+wheel==0.38.1
 wsgiref==0.1.2
