@@ -17,6 +17,19 @@ Alpha released.
 6. python controller.py
 7. go to [localhost:5000] (http://localhost:5000) in the browser
 
+##### Docker
+
+Build the Docker image:
+
+    docker build -t library-org .
+
+Run the Docker image:
+
+    docker run \
+      -p 5000:5000
+      -v /path/to/library.cfg:/app/library.cfg \
+      -v /path/to/books.sqlite:/app/database/books.sqlite \
+      localhost/library-org:latest
 
 ##### Features on-deck:
 
