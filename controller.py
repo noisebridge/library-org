@@ -16,15 +16,18 @@ import json
 
 import os
 
-from ConfigParser import SafeConfigParser
+import configparser
 
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 CONFIG_FILE = "library.cfg"
 CONFIG_PATH = os.path.join(PROJECT_ROOT, CONFIG_FILE)
-CONFIG = SafeConfigParser()
+CONFIG = configparser.ConfigParser()
 CONFIG.read(CONFIG_PATH)
+
+# Network configuration
+host = CONFIG.get("config", "host")
 
 # Configuration Secrets
 APP_SECRET_KEY = CONFIG.get("secrets", "APP_SECRET_KEY")
@@ -378,11 +381,11 @@ def index(page=1):
     # do a search if you have a search term
     # (make this more general for an all fields search)
     if s:
-        books = Book.query.order_by(Book.title.asc()).filter(or_(Book.title.contains(s), Book.authors.contains(s), Book.subjects.contains(s))).paginate(page,PAGINATE_BY_HOWMANY,False)
+        books = Book.query.order_by(Book.title.asc()).filter(or_(Book.title.contains(s), Book.authors.contains(s), Book.subjects.contains(s))).paginate(page=page, per_page=PAGINATE_BY_HOWMANY, error_out=False)
 
     # return all books, currently sort by title ascending.
     else:
-        books = Book.query.order_by(Book.title.asc()).paginate(page,PAGINATE_BY_HOWMANY,False)
+        books = Book.query.order_by(Book.title.asc()).paginate(page=page, per_page=PAGINATE_BY_HOWMANY, error_out=False)
 
     return render_template('index.html', books=books, s=s)
 
@@ -390,5 +393,5 @@ if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
     # app.run(host='0.0.0.0') # listens on all public IPs. 
 
-    app.run()
+    app.run(host=host)
 
