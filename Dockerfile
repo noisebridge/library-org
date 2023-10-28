@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.13
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -15,6 +15,9 @@ COPY . /app/
 
 RUN pip install -r /app/requirements.txt
 
-EXPOSE 8000
+EXPOSE 5000
 
-ENTRYPOINT ["/usr/bin/env", "python3", "/app/controller.py"]
+USER nobody
+
+ENTRYPOINT ["/usr/bin/env", "uwsgi", "--http", ":5000", "--ini", "uwsgi.ini"]
+CMD ["--processes", "2", "--threads", "2"]
