@@ -1,3 +1,4 @@
+# Make sure this matches runtime.txt
 FROM python:3.13
 
 ENV PYTHONDONTWRITEBYTECODE=1
