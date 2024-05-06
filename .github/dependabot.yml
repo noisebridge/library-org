@@ -1,0 +1,11 @@
+---
+version: 2
+updates:
+  # Note, the file `runtime.txt` is used to hint to dependabot
+  # the minimum version requirement for updates.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: monthly
+    labels:
+      - "dependencies"
