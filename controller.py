@@ -391,5 +391,7 @@ def index(page=1):
 
 if __name__ == "__main__":
     # flask can execute arbitrary python if you do this.
-    # app.run(host='0.0.0.0') # listens on all public IPs.
+    # app.run(host='0.0.0.0') # listens on all public IPs. 
+
     app.run(host=host)
+
