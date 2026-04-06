@@ -26,6 +26,7 @@
     "gulp-imagemin": "^7.1.0",
     "gulp-jshint": "^2.1.0",
     "gulp-sass": "^5.1.0",
+    "sass": "^1.77.0",
     "gulp-uglify": "^3.0.2",
     "imagemin-pngquant": "^9.0.0",
     "jshint": "^2.13.6"

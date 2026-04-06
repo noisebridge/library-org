@@ -9,6 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libsqlite3-dev \
@@ -16,13 +18,15 @@ RUN apt-get update \
 
 WORKDIR /app
 
-COPY . /app/
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
 
-RUN pip install -r /app/requirements.txt
+COPY . /app/
+RUN uv sync --frozen --no-dev
 
 EXPOSE 5000
 
 USER nobody
 
-ENTRYPOINT ["/usr/bin/env", "uwsgi", "--http", ":5000", "--ini", "uwsgi.ini"]
+ENTRYPOINT ["/app/.venv/bin/uwsgi", "--http", ":5000", "--ini", "uwsgi.ini"]
 CMD ["--processes", "2", "--threads", "2"]

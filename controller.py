@@ -389,9 +389,12 @@ def index(page=1):
 
     return render_template('index.html', books=books, s=s)
 
-if __name__ == "__main__":
+def main():
     # flask can execute arbitrary python if you do this.
-    # app.run(host='0.0.0.0') # listens on all public IPs. 
-
+    # app.run(host='0.0.0.0') # listens on all public IPs.
     app.run(host=host)
+
+
+if __name__ == "__main__":
+    main()
 
