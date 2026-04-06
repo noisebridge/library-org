@@ -1,5 +1,9 @@
 FROM python:3.13
 
+LABEL org.opencontainers.image.source=https://github.com/noisebridge/library-org
+LABEL org.opencontainers.image.description="Organizational system for a library"
+LABEL org.opencontainers.image.licenses=MIT
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
