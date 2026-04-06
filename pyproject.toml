@@ -18,3 +18,11 @@ dependencies = [
     "werkzeug==2.3.8",
     "wtforms==2.3.3",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+]
+
+[tool.ruff]
+line-length = 120
