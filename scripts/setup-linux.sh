@@ -6,7 +6,7 @@ if [ "$(id -u)" -ne 0 ]; then
     SUDO="sudo"
 fi
 
-echo "==> Installing system dependencies via apt..."
+echo "==> Installing system dependencies via apt-get..."
 if ! command -v apt-get &>/dev/null; then
     echo "Error: apt-get not found. This script is for Debian/Ubuntu-based systems." >&2
     exit 1
