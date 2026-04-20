@@ -21,7 +21,7 @@
   "license": "private",
   "devDependencies": {
     "bower": "^1.8.8",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-bower": "0.0.15",
     "gulp-imagemin": "^7.1.0",
     "gulp-jshint": "^2.1.0",
